@@ -149,7 +149,7 @@ function choice(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function capCodetoHTML(cc) {
+function capCodeToHTML(cc) {
   console.log("Generating " + cc['tagName'] + " tag.");
   var tag = '<' + cc['tagName'];
   for (var att in cc['attributes']) {
@@ -180,7 +180,7 @@ function exerciseCapability(cap) {
     throw new Error("Capability is not defined")
   }
   var capCode = choice(caps[cap]); // randomly pick one
-  return capCodetoHTML(capCode);
+  return capCodeToHTML(capCode);
 }
 
 
