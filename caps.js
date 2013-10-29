@@ -23,7 +23,6 @@ var caps = {
     {"tagName": "INPUT", "attributes": {"autofocus": "", "onblur": ['X-payload', 'text/javascript']}},
     {"tagName": "VIDEO", "attributes": {"poster": ['X-url', 'text/javascript'] }},
     {"tagName": "svg", "attributes": {"onload": ['X-url', 'text/javascript']}},
-    {"tagName": "X", "attributes": {"onbegin": ['X-payload', 'text/javascript'], "style": "`behavior:url(#default#time2)`"}},
     {"tagName": "TABLE", "attributes": {"background": ['X-url', 'text/javascript']}},
     {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
     {"tagName": "OBJECT", "attributes": {"data":['X-url', 'text/javascript']}},
