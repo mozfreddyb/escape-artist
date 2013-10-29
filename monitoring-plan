@@ -1,0 +1,10 @@
+The monitoring plan is as follows:
+
+- If we can make requests go out in the background we do request to something in '/sample/', which is some sort of request trap.
+- All specific resource can be satisfied by something in there like sample/sample.css, sample/sample.js etc.
+
+
+Mutation Ideas:
+-> Unexpected Unicode characters which are said to be whitespaces http://web.lookout.net/2008/08/advisory-attack-of-mongolian-space.html
+-> unicode testing library http://web.lookout.net/2013/01/unicode-security-testing-library.html
+   This is interesting, https://en.wikipedia.org/wiki/Unicode_character_property

@@ -1,0 +1,9 @@
+execute script (e.g. script tag, evt handler, follow javascript/data uri, plugin)
+apply style (e.g. script tag, style attr)
+render resource
+    - image (img, svg)
+    - sound (audio, ??)
+    - video (video)
+    - webpage (iframe + sandbox)
+navigate window (form, a)
+trigger request (form, prefetch, ..)

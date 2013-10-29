@@ -1,0 +1,6 @@
+/* this is wrong in both cases: when included as a style sheet via src or written in a style attribute. 
+
+since the browser likes to be nice it just ignores the one it doesnt understand. it always requests '/notify'. */
+
+
+* { box-shadow: 0 0 20px black, 20px 15px 30px yellow, -20px 15px 30px lime, -20px -15px 30px blue, 20px -15px 30px red; background-image: url(/notify); }; box-shadow: 0 0 20px black, 20px 15px 30px yellow, -20px 15px 30px lime, -20px -15px 30px blue, 20px -15px 30px red; background-image: url(/notify);
