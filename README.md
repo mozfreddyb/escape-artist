@@ -1,4 +1,4 @@
-scaling-bear
-============
+escape-artist
+=============
 
-yes this is important enough that I allowed github to pick the repo name
+I will try to systematically break or bypass html sanitizer. The name was chosen more or less arbitrarily.
