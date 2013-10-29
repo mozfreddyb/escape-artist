@@ -1,4 +1,4 @@
 escape-artist
 =============
 
-I will try to systematically break or bypass html sanitizer. The name was chosen more or less arbitrarily.
+I will try to systematically break or bypass html sanitizers. The name was chosen more or less arbitrarily.
