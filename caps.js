@@ -15,8 +15,27 @@ var caps = {
    */
 //  'Ø': [], // this looks way sexier than a zero
   'CAP_INCLUDE_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', '']} } ], // the most powerful you can get...descending from here
-  'CAP_EXECUTE_SCRIPT': [{'tagName': 'script', 'attributes': {}, 'content': ['X-payload','text/javascript']},
-    {'tagName': 'img', 'attributes': {'src': ['X-url', 'image/*'], 'onload': ['X-payload','text/javascript']} } ],
+  'CAP_EXECUTE_SCRIPT': [{'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
+    {'tagName': 'img', 'attributes': {'src': ['X-url', 'image/*'], 'onload': ['X-payload', 'text/javascript']} },
+    {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
+    {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
+    {"tagName": "INPUT", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}},
+    {"tagName": "INPUT", "attributes": {"autofocus": "", "onblur": ['X-payload', 'text/javascript']}},
+    {"tagName": "VIDEO", "attributes": {"poster": ['X-url', 'text/javascript'] }},
+    {"tagName": "svg", "attributes": {"onload": ['X-url', 'text/javascript']}},
+    {"tagName": "X", "attributes": {"onbegin": ['X-payload', 'text/javascript'], "style": "`behavior:url(#default#time2)`"}},
+    {"tagName": "TABLE", "attributes": {"background": ['X-url', 'text/javascript']}},
+    {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
+    {"tagName": "OBJECT", "attributes": {"data":['X-url', 'text/javascript']}},
+    {"tagName": "EMBED", "attributes": {"src":['X-url', 'text/javascript']} },
+    /*TODO
+    replacing in attribute value :<
+    {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
+    {"tagName":"STYLE","attributes":{},"content":"@import \"data:,*%7bx:expression(write(1))%7D\";"},
+    */
+  ],
+  //TODO how to nest tags? e.g. <form id="test"></form><button form="test" formaction="javascript:alert(1)">X</button>
+
   'CAP_APPLY_STYLE': [{'tagName': 'span', 'attributes': {'style': ['X-payload', 'text/css'] } },
     {'tagName': 'style', 'attributes': {'type': 'text/css'}, 'content': ['X-payload', 'text/css'] },
     {'tagName': 'style', 'attributes': {'type': 'text/css', 'src': ['X-url', 'text/css']} }
@@ -53,6 +72,7 @@ function typeToPath(resType) {
   // Type: content-type, either type/subtype or just type, not "type/*".
   var res = {
     'text/html': 'samples/sample.html',
+    'text/html': 'samples/sample.txt',
     'text/javascript': 'samples/sample.js',
     'text/css': 'samples/sample.css',
     'application/font-woff': 'samples/brankovic.ttf',
