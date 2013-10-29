@@ -73,14 +73,14 @@ function typeToPath(resType) {
   };
   if (resType == '') {
     // most capable or random? :/
-    return res[choice(Object.keys)]; //res['text/html'];
+    return res[choice(Object.keys(res))]; //res['text/html'];
   }
   if (resType.indexOf("/") == -1) { // have to search through keys... most capable or random? tricky :<
-      for (var key in Object.keys(res)) {
+       var list = []
+       for (var key in res) {
         var majorType = key.split("/")[0];
-        var list = []
         if (majorType.indexOf(resType) == 0) {
-          list.append(res[key]);
+          list.push(res[key]);
         }
       }
       return choice(list); // random.
@@ -192,3 +192,4 @@ function exerciseRandomCapability() {
 
 exerciseRandomCapability();
 
+debugger;
