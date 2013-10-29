@@ -22,8 +22,8 @@ var caps = {
     {'tagName': 'style', 'attributes': {'type': 'text/css', 'src': ['X-url', 'text/css']} }
     ],
   'CAP_MEDIA_IMAGE': [{'tagName': 'img', 'attributes': {'src': ['X-url', 'image']} } ],
-  'CAP_MEDIA_AUDIO': [{'tagName': 'audio', 'attributes': {'autoplay':'true', 'src': ['X-url', 'audio']} } ],
-  'CAP_MEDIA_VIDEO': [{'tagName': 'video', 'attributes': {'autoplay':'true', 'src': ['X-url', 'video']} } ],
+  'CAP_MEDIA_AUDIO': [{'tagName': 'audio', 'attributes': {'autoplay': 'true', 'src': ['X-url', 'audio']} } ],
+  'CAP_MEDIA_VIDEO': [{'tagName': 'video', 'attributes': {'autoplay': 'true', 'src': ['X-url', 'video']} } ],
   'CAP_SHOW_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', ''], 'sandbox': ''} } ],
    'CAP_TRIGGER_REQUEST': [
      {'tagName': 'link', 'attributes': {'rel':'prefetch', 'href': ['X-url', '']}, 'content':''} // prefetching
