@@ -1,1 +1,1 @@
-alert(1)
+postMessage([ this.id, this.location.href, this.name ])
