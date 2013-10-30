@@ -15,18 +15,20 @@ var caps = {
    */
 //  'Ø': [], // this looks way sexier than a zero
   'CAP_INCLUDE_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', '']} } ], // the most powerful you can get...descending from here
-  'CAP_EXECUTE_SCRIPT': [{'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
+  'CAP_EXECUTE_SCRIPT': [
+    {'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
+    {'tagName': 'script', 'attributes': {'src': ['X-payload', 'text/javascript']} },
     {'tagName': 'img', 'attributes': {'src': ['X-url', 'image/*'], 'onload': ['X-payload', 'text/javascript']} },
     {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
     {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
-    {"tagName": "INPUT", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}},
-    {"tagName": "INPUT", "attributes": {"autofocus": "", "onblur": ['X-payload', 'text/javascript']}},
-    {"tagName": "VIDEO", "attributes": {"poster": ['X-url', 'text/javascript'] }},
+    {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}},
+    {"tagName": "input", "attributes": {"autofocus": "", "onblur": ['X-payload', 'text/javascript']}},
+    {"tagName": "video", "attributes": {"poster": ['X-url', 'text/javascript'] }},
     {"tagName": "svg", "attributes": {"onload": ['X-url', 'text/javascript']}},
-    {"tagName": "TABLE", "attributes": {"background": ['X-url', 'text/javascript']}},
+    {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
     {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
-    {"tagName": "OBJECT", "attributes": {"data":['X-url', 'text/javascript']}},
-    {"tagName": "EMBED", "attributes": {"src":['X-url', 'text/javascript']} },
+    {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
+    {"tagName": "embed", "attributes": {"src":['X-url', 'text/javascript']} },
     /*TODO
     replacing in attribute value :<
     {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
@@ -146,9 +148,20 @@ function makeURL(contenttype) {
   //return choice(URL_LAYERS)(path, contenttype);
 }
 function makePayload(path) {
-  //console.log("reading from" + path);
-  var fs = require("fs");
-  return fs.readFileSync(path);
+  if (typeof require !== "undefined") {
+    var fs = require("fs");
+    return fs.readFileSync(path);
+  } else {
+    var xhr = XMLHttpRequest();
+    var result;
+    xhr.open("GET", path, false);
+    xhr.onload = function() { result = xhr.response };
+    xhr.send();
+    // we can safely return here because this XHR is not async :P
+    return result;
+
+
+  }
 }
 function resolveResource(arr) {
   var resMethod = arr[0];
@@ -205,7 +218,7 @@ function exerciseCapability(cap) {
 
 function exerciseRandomCapability() {
   var cap_name = choice(Object.keys(caps));
-  console.log("Let's try with cap: " + cap_name);
+  console.log("Generating a sample for " + cap_name);
   console.log(exerciseCapability(cap_name));
 }
 
