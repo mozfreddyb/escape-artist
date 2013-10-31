@@ -65,7 +65,6 @@ function addResult(filterName, tmplNo, Vector) {
 
 
 window.onmessage = function handle(evt) { // data, origin, source
-  console.log(evt.data, typeof evt.data, evt.data.length, evt.source == frames[0] );
   if (document.querySelector("iframe").src.endsWith("escape-artist/template.html")) {
     if (evt.source == frames[0]) {
       // we're good...kinda.
