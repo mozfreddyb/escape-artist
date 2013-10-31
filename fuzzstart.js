@@ -32,7 +32,7 @@ function nextTest() {
     frames[0].document.body.innerHTML = frames[0].document.body.innerHTML.replace(tmplVar, input);
     document.querySelector("#debug").value = frames[0].document.body.innerHTML;
   } catch (e) {}
-  addToLog(filterNo, tmplNo, vector, "pending/safe");
+  //addToLog(filterNo, tmplNo, vector, "pending/safe");
   setTimeout(triggerNext, 100);
   tmplNo++;
 }
@@ -78,10 +78,13 @@ function addToLog(filterNo, tmplNo, Vector, status) {
   table.appendChild(tr);
 }
 function updateLog(info, status) {
-  var td = document.getElementById(info);
-  td.textContent = status;
-  td.className = (status == "bypass") ? "bypass" : "safe";
-
+  try {
+    var td = document.getElementById(info);
+    td.textContent = status;
+    td.className = (status == "bypass") ? "bypass" : "safe";
+    return true;
+  }
+  catch(e) { return false; }
 }
 
 window.onmessage = function handle(evt) { // data, origin, source
@@ -99,7 +102,9 @@ window.onmessage = function handle(evt) { // data, origin, source
         var filterNo = decoded[1];
         var tmplNo = decoded[3];
         var vector = decoded[5];
-        updateLog(info, "bypass");
+        if (updateLog(info, "bypass") !== true) {
+          addToLog(filterNo, tmplNo, vector, "bypass");
+        }
 
         //console.log(evt.data)
       }
