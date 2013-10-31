@@ -144,8 +144,9 @@ function makeURL(contenttype) {
 
   var path = typeToPath(contenttype)
 
-  return URL_LAYERS['http'](path, contenttype);
-  //return choice(URL_LAYERS)(path, contenttype);
+  //TODO revisit randomly chosen urls
+  //return URL_LAYERS['http'](path, contenttype);
+  return URL_LAYERS[choice(Object.keys(URL_LAYERS))](path, contenttype);
 }
 function makePayload(path) {
   if (typeof require !== "undefined") {

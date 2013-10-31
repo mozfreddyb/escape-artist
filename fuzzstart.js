@@ -68,7 +68,7 @@ function addToLog(filterNo, tmplNo, Vector, status) {
   tr.appendChild(td_2);
   var text_2 = document.createTextNode(status);
   td_2.id = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
-  td_2.className = "pending"
+  td_2.className = "pending";
   td_2.appendChild(text_2);
 
   var table = document.querySelector("#resultTable");
