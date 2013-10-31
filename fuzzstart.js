@@ -36,9 +36,6 @@ function nextTest() {
   setTimeout(triggerNext, 100);
   tmplNo++;
 }
-function triggerNext() {
-  frames[0].location.reload()
-}
 
 function addToLog(filterNo, tmplNo, Vector, status) {
   var tmplNames = ['in HTML', 'in an attribute', 'in a comment'];
@@ -114,5 +111,13 @@ window.onmessage = function handle(evt) { // data, origin, source
 }
 
 window.onload = function() {
-  document.querySelector("#nextButton").addEventListener("click", triggerNext);
+  document.querySelector("#nextButton").addEventListener("click", stahp);
+}
+
+function triggerNext() {
+  frames[0].location.reload()
+}
+
+function stahp() {
+  nextTest = function() { };
 }
