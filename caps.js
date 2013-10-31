@@ -1,5 +1,5 @@
-CONFIG_HOST= "localhost";
-CONFIG_PATH = "~freddy/escape-artist/";
+CONFIG_HOST= document.location.hostname || "localhost";
+CONFIG_PATH = document.location.pathname || "~freddy/escape-artist/";
 
 var caps = {
   /* a dictionary of capability names and examples to exercise them.
@@ -174,7 +174,6 @@ function resolveResource(arr) {
     var path = typeToPath(typ);
     return makePayload(path);
   }
-
 }
 
 function choice(arr) {

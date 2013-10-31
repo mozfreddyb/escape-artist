@@ -1,30 +1,24 @@
 var filters = [
-  function nullFilter(s) {
-    // do not filter
+  [function nullFilter(s) {
     return s;
-  },
-  function first50(s) {
-    // strips after 50 characters
+  }, "Does not filter"],
+  [function first50(s) {
     return s.substring(0, 50)
-  },
-  function first100(s) {
-    // strips after 100 characters
+  }, "Strips after 50 Characters"],
+  [function first100(s) {
     return s.substring(0, 100)
-  },
-
-  function use_escape(s) {
-    // use built-in escape
+  }, "Strips after 100 Characters"],
+  [function use_escape(s) {
     return escape(s);
-  },
-  function urlencode(s) {
-    // use encodeURIComponent
+  }, "uses JavaScript escape()"],
+  [function urlencode(s) {
     return encodeURIComponent(s);
-  },
-  function replaceQuotesandAngles(s) {
+  }, "uses encodeURIComponent"],
+  [function replaceQuotesandAngles(s) {
     return s.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&#27;");
-  },
-  function stripQuotesandAngles(s) {
+  }, "Replaces <,> ' and \" with entities"],
+  [function stripQuotesandAngles(s) {
     return s.replace(/>/g, "").replace(/</g, "").replace(/"/g, "").replace(/'/g, "");
-  },
+  }, "Strips <,> ' and \""],
 
 ];
