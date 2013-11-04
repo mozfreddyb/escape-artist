@@ -3,7 +3,6 @@ var filterNo = 0;
 var tmplNo = 0;
 var tmplMax = 3;
 var vector = exerciseCapability('CAP_EXECUTE_SCRIPT');
-var vector = (new String("<img src=\"http://localhost/~freddy/escape-artist//samples/sample.gif\" onload=\"top.postMessage([ window.location.href, window.name ], '*');\">"));
 
 function nextTest() {
 
@@ -15,8 +14,6 @@ function nextTest() {
 
     filterNo = 0; tmplNo = 0;
     vector = exerciseCapability('CAP_EXECUTE_SCRIPT');
-    //console.log("Done");
-    //return;
   }
   var filterFunc = filters[filterNo][0];
 
@@ -27,7 +24,7 @@ function nextTest() {
   console.log("Filtered: " + input);
   //TODO test other thing than "just" script execution as a filter violation.
 
-  frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
+  frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", JSON.stringify(vector)].join("|"));
   try {
     frames[0].document.body.innerHTML = frames[0].document.body.innerHTML.replace(tmplVar, input);
     document.querySelector("#debug").value = frames[0].document.body.innerHTML;
@@ -85,7 +82,7 @@ function updateLog(info, status) {
 }
 
 window.onmessage = function handle(evt) { // data, origin, source
-  if (document.querySelector("iframe").src.endsWith("escape-artist/template.html")) {
+  if (document.querySelector("iframe").src.indexOf("escape-artist/template.html") !== -1) {
     if (evt.source == frames[0]) {
       // we're good...kinda.
       if ((evt.data instanceof Array) && (evt.data.length == 2)) {

