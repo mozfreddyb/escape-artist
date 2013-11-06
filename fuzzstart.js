@@ -40,7 +40,7 @@ function addToLog(filterNo, tmplNo, Vector, status) {
   if (tmplNo < tmplNames.length) {
     tmplDesc = tmplNames[tmplNo];
   }
-  var filterName = filters[filterNo][0].name;
+  var filterName = filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1]; // regexp the name out, for IE.
   var tr = document.createElement('TR');
 
   var td = document.createElement('TD');
