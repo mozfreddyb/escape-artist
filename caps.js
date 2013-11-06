@@ -159,7 +159,7 @@ function makePayload(path) {
     var xhr = new XMLHttpRequest();
     var result;
     xhr.open("GET", path, false);
-    xhr.onload = function() { result = xhr.response }; //XXX make sure binary data is safely handled -.-
+    xhr.onload = function() { result = xhr.responseText; }; //XXX make sure binary data is safely handled -.-
     xhr.send();
     // we can safely return here because this XHR is not async :P
     return result;

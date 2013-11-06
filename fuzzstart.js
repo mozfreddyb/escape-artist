@@ -3,6 +3,7 @@ var filterNo = 0;
 var tmplNo = 0;
 var tmplMax = 3;
 var vector = exerciseCapability('CAP_EXECUTE_SCRIPT');
+//var vector = '<img src="x" onerror="top.postMessage([ window.location.href, window.name ], \'*\');"></img>';
 
 function nextTest() {
 
@@ -82,15 +83,20 @@ function updateLog(info, status) {
 }
 
 window.onmessage = function handle(evt) { // data, origin, source
+  var data = evt.data;
   if (document.querySelector("iframe").src.indexOf("escape-artist/template.html") !== -1) {
     if (evt.source == frames[0]) {
       // we're good...kinda.
-      if ((evt.data instanceof Array) && (evt.data.length == 2)) {
-        console.log("adding result.. " + evt.data );
+      console.log("type:", typeof data);
+      if (typeof data == "string") { // MSIE9
+        data = data.split(",");
+      }
+      if ((data instanceof Array) && (data.length == 2)) {
+        console.log("adding result.. " + data );
         var loc = evt.data[0];
 
         // info = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
-        var info = evt.data[1];
+        var info = data[1];
         var decoded = atob(info);
         decoded = decoded.split("|");
         var filterNo = decoded[1];
