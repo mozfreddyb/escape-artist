@@ -6,13 +6,17 @@ var tmplMax = 3;
 
 var tested = {}; // used as hashtable to find vectors already
 function getVector() {
+  // cool vector I just thought of: -->"; alert("<script>alert(1)</script>");//
+  // works in comment, script and pure html. not in any tag or style though.
+  // see also "one vector to rule them all".
   var newVector;
   var tries = 0;
   do {
-    var newVector = exerciseCapability('CAP_EXECUTE_SCRIPT');
+    newVector = exerciseCapability('CAP_EXECUTE_SCRIPT');
     tries++;
     if (tries > 50) { console.log("I failed to make a new vector. I tried a lot. Quitting."); break; }
   } while (newVector in tested);
+  tries = 0;
   tested[newVector] = true;
   return newVector
 }
