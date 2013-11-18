@@ -21,9 +21,9 @@ else { echo "{{var0}}"; }
 
 <!-- <?php
      if (isset($_GET['var2'])) {
-       echo $_GET['var2'];
+       echo base64_decode($_GET['var2']);
      }
-     else { echo "base64_decode({{var2}})"; }
+     else { echo "{{var2}}"; }
      ?> -->
 
 </body>

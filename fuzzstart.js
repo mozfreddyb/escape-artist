@@ -26,22 +26,21 @@ function nextTest() {
     filterNo++;
   }
   if (filterNo >= filters.length) {
-
     filterNo = 0; tmplNo = 0;
     vector = getVector();
   }
   var filterFunc = filters[filterNo][0];
 
-  var tmplVar = "{{var" + tmplNo + "}}";
-  var input = filterFunc(vector);
+  var filteredVector = filterFunc(vector);
 
   console.log("Trying Vector: " + vector);
-  console.log("Filtered: " + input);
+  console.log("Filtered: " + filteredVector);
   //TODO test other thing than "just" script execution as a filter violation.
 
   frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", JSON.stringify(vector)].join("|"));
   try {
-    frames[0].document.body.innerHTML = frames[0].document.body.innerHTML.replace(tmplVar, input);
+    frames[0].document.location  = 'template.php?var' + tmplNo + '=' + encodeURIComponent(btoa(filteredVector));
+    //frames[0].src = 'template.php?var' + tmplNo + '=' + encodeURIComponent(btoa(filteredVector));
     document.querySelector("#debug").value = frames[0].document.body.innerHTML;
   } catch (e) {}
   //addToLog(filterNo, tmplNo, vector, "pending/safe");
@@ -98,7 +97,7 @@ function updateLog(info, status) {
 
 window.onmessage = function handle(evt) { // data, origin, source
   var data = evt.data;
-  if (document.querySelector("iframe").src.indexOf("escape-artist/template.html") !== -1) {
+  if (document.querySelector("iframe").src.indexOf("escape-artist/template.php") !== -1) {
     if (evt.source == frames[0]) {
       // we're good...kinda.
       console.log("type:", typeof data);
