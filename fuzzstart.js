@@ -2,7 +2,21 @@
 var filterNo = 0;
 var tmplNo = 0;
 var tmplMax = 3;
-var vector = exerciseCapability('CAP_EXECUTE_SCRIPT');
+
+
+var tested = {}; // used as hashtable to find vectors already
+function getVector() {
+  var newVector;
+  var tries = 0;
+  do {
+    var newVector = exerciseCapability('CAP_EXECUTE_SCRIPT');
+    tries++;
+    if (tries > 50) { console.log("I failed to make a new vector. I tried a lot. Quitting."); break; }
+  } while (newVector in tested);
+  tested[newVector] = true;
+  return newVector
+}
+var vector = getVector();
 //var vector = '<img src="x" onerror="top.postMessage([ window.location.href, window.name ], \'*\');"></img>';
 
 function nextTest() {
@@ -14,7 +28,7 @@ function nextTest() {
   if (filterNo >= filters.length) {
 
     filterNo = 0; tmplNo = 0;
-    vector = exerciseCapability('CAP_EXECUTE_SCRIPT');
+    vector = getVector();
   }
   var filterFunc = filters[filterNo][0];
 
@@ -115,10 +129,28 @@ window.onmessage = function handle(evt) { // data, origin, source
 
 window.onload = function() {
   document.querySelector("#nextButton").addEventListener("click", stahp);
+  document.querySelector("#toggleVisibility").addEventListener("click", hideTexts);
 }
 
 function triggerNext() {
   frames[0].location.reload()
+}
+
+
+function hideTexts() {
+  /* toggle hiding
+   <iframe id="contentFrame" onload="nextTest();" src="template.html"></iframe><br>
+   <textarea id="debug" style="width: 480px; height: 240px;"></textarea><br>
+   */
+  try {
+    if ((document.getElementById("contentFrame").style.display == "") || (document.getElementById("contentFrame").style.display == "block")) {
+    document.getElementById("contentFrame").style.display = "none";
+    document.getElementById("debug").style.display = "none";
+    } else {
+    document.getElementById("contentFrame").style.display = "block";
+    document.getElementById("debug").style.display = "block";
+    }
+  } catch(e) { }; // lazy
 }
 
 function stahp() {
