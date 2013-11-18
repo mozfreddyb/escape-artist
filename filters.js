@@ -7,7 +7,7 @@ var filters = [
   }, "Strips after 50 Characters"],
   [function first100(s) {
     return s.substring(0, 100)
-  }, "Strips after 100 Characters"],   */
+  }, "Strips after 100 Characters"], */
   [function use_escape(s) {
     return escape(s);
   }, "uses JavaScript escape()"],

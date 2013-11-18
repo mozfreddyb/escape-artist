@@ -9,6 +9,10 @@ function getVector() {
   // cool vector I just thought of: -->"; alert("<script>alert(1)</script>");//
   // works in comment, script and pure html. not in any tag or style though.
   // see also "one vector to rule them all".
+  //     reworked the "one vector" to use our top.postMessage thing :)
+  // javascript:/*-->]]>%>?></script></title></textarea></noscript></style></xmp>">[img=1,name=top.postMessage([window.location.href,window.name],/\*/.source.slice(1))]<img -/style=a:expression&#40&#47&#42'/-/*&#39,/**/eval(name)/*%2A///*///&#41;;width:100%;height:100%;position:absolute;-ms-behavior:url(#default#time2) name=top.postMessage([window.location.href,window.name],/\*/.source.slice(1)) onerror=eval(name) src=1 autofocus onfocus=eval(name) onclick=eval(name) onmouseover=eval(name) onbegin=eval(name) background=javascript:eval(name)//>"
+  // == atob("amF2YXNjcmlwdDovKi0tPl1dPiU+Pz48L3NjcmlwdD48L3RpdGxlPjwvdGV4dGFyZWE+PC9ub3NjcmlwdD48L3N0eWxlPjwveG1wPiI+W2ltZz0xLG5hbWU9dG9wLnBvc3RNZXNzYWdlKFt3aW5kb3cubG9jYXRpb24uaHJlZix3aW5kb3cubmFtZV0sL1wqLy5zb3VyY2Uuc2xpY2UoMSkpXTxpbWcgLS9zdHlsZT1hOmV4cHJlc3Npb24mIzQwJiM0NyYjNDInLy0vKiYjMzksLyoqL2V2YWwobmFtZSkvKiUyQS8vLyovLy8mIzQxOzt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO3Bvc2l0aW9uOmFic29sdXRlOy1tcy1iZWhhdmlvcjp1cmwoI2RlZmF1bHQjdGltZTIpIG5hbWU9dG9wLnBvc3RNZXNzYWdlKFt3aW5kb3cubG9jYXRpb24uaHJlZix3aW5kb3cubmFtZV0sL1wqLy5zb3VyY2Uuc2xpY2UoMSkpIG9uZXJyb3I9ZXZhbChuYW1lKSBzcmM9MSBhdXRvZm9jdXMgb25mb2N1cz1ldmFsKG5hbWUpIG9uY2xpY2s9ZXZhbChuYW1lKSBvbm1vdXNlb3Zlcj1ldmFsKG5hbWUpIG9uYmVnaW49ZXZhbChuYW1lKSBiYWNrZ3JvdW5kPWphdmFzY3JpcHQ6ZXZhbChuYW1lKS8vPiI=");
+  //
   var newVector;
   var tries = 0;
   do {
@@ -30,6 +34,7 @@ function nextTest() {
     filterNo++;
   }
   if (filterNo >= filters.length) {
+   // console.log("Done through all filters"); return
     filterNo = 0; tmplNo = 0;
     vector = getVector();
   }
@@ -41,7 +46,12 @@ function nextTest() {
   console.log("Filtered: " + filteredVector);
   //TODO test other thing than "just" script execution as a filter violation.
 
-  frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", JSON.stringify(vector)].join("|"));
+  if (typeof String.toSource !== "undefined") {
+    // JSON.stringify is pretty cool, but toSource doesn't fuck up binary data in strings ;)
+    frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector.toSource()].join("|"));
+  } else {
+    frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", JSON.stringify(vector)].join("|"));
+  }
   try {
     frames[0].document.location  = 'template.php?var' + tmplNo + '=' + encodeURIComponent(btoa(filteredVector));
     //frames[0].src = 'template.php?var' + tmplNo + '=' + encodeURIComponent(btoa(filteredVector));

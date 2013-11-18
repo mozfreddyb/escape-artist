@@ -1,1 +1,1 @@
-top.postMessage([ window.location.href, window.name ], '*');
+top.postMessage([window.location.href,window.name],/\*/.source.slice(1));

