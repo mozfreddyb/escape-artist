@@ -14,3 +14,7 @@ div#overflow {
     overflow: scroll;
     height: 600px;
 }
+#debug {
+    width: 480px;
+    height: 240px;
+}

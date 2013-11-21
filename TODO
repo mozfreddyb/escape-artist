@@ -1,4 +1,6 @@
+* figre out how to handle binary data
 * mutate using entities and escapes where applicable
 * add random prefix/suffix to escape context
 * enable testing of other restriction scenarios (elements of "this" in Worker, CSP & Iframe Sandbox, ...)
 * grep for TODO/XXX comments..
+* context for ' quotes in template

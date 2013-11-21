@@ -6,25 +6,23 @@
 <body>
 
 <?php
-if (isset($_GET['var0'])) {
-  echo base64_decode($_GET['var0']);
+if ((isset($_GET['tid'])) && (isset($_GET['input']))) {
+    switch (intval($_GET['tid'], 10)) {
+        case 0:
+            echo base64_decode($_GET['input']);
+            break;
+        case 1:
+            echo "<img src=\"".base64_decode($_GET['input'])."\" />";
+            break;
+        case 2:
+            echo "<!-- " .base64_decode($_GET['input']) . " -->";
+            break;
+    }
 }
-else { echo "{{var0}}"; }
+else {
+  die("No valid Template ID given or no input :(((");
+}
 ?>
-
-<img src="<?php
-          if (isset($_GET['var1'])) {
-            echo base64_decode($_GET['var1']);
-          }
-            else { echo "{{var1}}"; }
-          ?>" />
-
-<!-- <?php
-     if (isset($_GET['var2'])) {
-       echo base64_decode($_GET['var2']);
-     }
-     else { echo "{{var2}}"; }
-     ?> -->
 
 </body>
 </html>
