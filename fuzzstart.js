@@ -7,7 +7,7 @@ var FuzzRunner = (function() {
   var tmplNo = 0;
   var tmplMax = 3;
   var tested = {}; // used as hashtable to find vectors already used
-
+  var vector;
   function executeTest(vector) {
     if (tmplNo == tmplMax) { // next filter, if done with all templates
       tmplNo = tmplNo % tmplMax;
@@ -20,7 +20,7 @@ var FuzzRunner = (function() {
       }
 
       filterNo = 0; tmplNo = 0;
-      //console.log(vector);
+      vector = Producer.exerciseNewCapability("CAP_EXECUTE_SCRIPT");
     }
     var filterFunc = filters[filterNo][0];
     var filteredVector = filterFunc(vector);
@@ -47,15 +47,27 @@ var FuzzRunner = (function() {
     tmplNo++;
   }
 
-  function nextTest() {
-    var v = Producer.exerciseNewCapability("CAP_EXECUTE_SCRIPT"
-      // callback that calls executeTest
-    );
+  function start() {
+    if (vector === undefined) {
+      if (CONFIG.debug) {
+        // "one vector to rule them all"
+        vector = (new String("javascript:/*-->]]>%>?></script></title></textarea></noscript></style></xmp>\">[img=1,name=top.postMessage([window.location.href,window.name],/\\*/.source.slice(1))]<img -/style=a:expression&#40&#47&#42'/-/*&#39,/**/eval(name)/*%2A///*///&#41;;width:100%;height:100%;position:absolute;-ms-behavior:url(#default#time2) name=top.postMessage([window.location.href,window.name],/\\*/.source.slice(1)) onerror=eval(name) src=1 autofocus onfocus=eval(name) onclick=eval(name) onmouseover=eval(name) onbegin=eval(name) background=javascript:eval(name)//>\""))
+      } else {
+      vector = Producer.exerciseNewCapability("CAP_EXECUTE_SCRIPT");
+      }
+    }
+    executeTest(vector);
+  }
 
-    //TODO move into callback, once this is async
-    console.log("execute: ", v)
-    executeTest(v);
 
+  function updateLog(info, status) {
+    try {
+      var td = document.getElementById(info);
+      td.textContent = status;
+      td.className = (status == "bypass") ? "bypass" : "safe";
+      return true;
+    }
+    catch(e) { return false; }
   }
 
   function addToLog(filterNo, tmplNo, Vector, status) {
@@ -115,7 +127,9 @@ var FuzzRunner = (function() {
     nextTest = function() { };
   }
 
-  runner.nextTest = nextTest;
+  runner.addToLog = addToLog;
+  runner.updateLog = updateLog;
+  runner.start = start;
   runner.stop = stahp; // ...
   return runner;
 })();

