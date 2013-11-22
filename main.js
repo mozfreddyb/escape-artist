@@ -52,10 +52,10 @@ function hideTests() {
 window.onload = function() {
   document.querySelector("#nextButton").addEventListener("click", FuzzRunner.stahp);
   document.querySelector("#toggleVisibility").addEventListener("click", hideTests);
-  document.querySelector("#contentFrame").addEventListener("load", function() { setTimeout(FuzzRunner.start, 200); } ); // wait a bit for debugging..
+  document.querySelector("#contentFrame").addEventListener("load", function() { setTimeout(FuzzRunner.start, 150); } ); // wait a bit for debugging..
   // the first iframe is already loaded. kick off first test manually.
   // wait a sec, then load :) (required because producer caches things..)
-  setTimeout(FuzzRunner.start, 1000);
+  setTimeout(FuzzRunner.start, 500);
 }
 
 var CONFIG = {

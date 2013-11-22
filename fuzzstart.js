@@ -8,7 +8,7 @@ var FuzzRunner = (function() {
   var tmplMax = 3;
   var tested = {}; // used as hashtable to find vectors already used
   var vector;
-  function executeTest(vector) {
+  function executeTest() {
     if (tmplNo == tmplMax) { // next filter, if done with all templates
       tmplNo = tmplNo % tmplMax;
       filterNo++;
@@ -21,6 +21,7 @@ var FuzzRunner = (function() {
 
       filterNo = 0; tmplNo = 0;
       vector = Producer.exerciseNewCapability("CAP_EXECUTE_SCRIPT");
+      console.log("New: "+ vector)
     }
     var filterFunc = filters[filterNo][0];
     var filteredVector = filterFunc(vector);
