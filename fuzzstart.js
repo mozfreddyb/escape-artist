@@ -20,7 +20,7 @@ var FuzzRunner = (function() {
       }
 
       filterNo = 0; tmplNo = 0;
-      vector = Producer.exerciseNewCapability("CAP_EXECUTE_SCRIPT");
+      vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
       console.log("New: "+ vector)
     }
     var filterFunc = filters[filterNo][0];
@@ -54,7 +54,7 @@ var FuzzRunner = (function() {
         // "one vector to rule them all"
         vector = (new String("javascript:/*-->]]>%>?></script></title></textarea></noscript></style></xmp>\">[img=1,name=top.postMessage([window.location.href,window.name],/\\*/.source.slice(1))]<img -/style=a:expression&#40&#47&#42'/-/*&#39,/**/eval(name)/*%2A///*///&#41;;width:100%;height:100%;position:absolute;-ms-behavior:url(#default#time2) name=top.postMessage([window.location.href,window.name],/\\*/.source.slice(1)) onerror=eval(name) src=1 autofocus onfocus=eval(name) onclick=eval(name) onmouseover=eval(name) onbegin=eval(name) background=javascript:eval(name)//>\""))
       } else {
-      vector = Producer.exerciseNewCapability("CAP_EXECUTE_SCRIPT");
+      vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
       }
     }
     executeTest(vector);

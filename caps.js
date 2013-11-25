@@ -206,14 +206,27 @@ var ProducerModule = (function() {
     return templateToHTML(capCode);
   }
 
+  function getBreakOutString() {
+    var breakouts = ['</'+'script>',
+                     '-->',
+                     '"',
+                     "'",
+                     '">',
+                     "'>",
+    ];
+    return choice(breakouts);
+  }
+
   var tested = {};
-  function exerciseNewCapability(cap) {
+  function getNewVector(cap) {
     var newVector;
     var tries = 0;
     do {
-      newVector = exerciseCapability(cap);
+      newVector = getBreakOutString() + exerciseCapability(cap);
       tries++;
       if (tries > 100) {
+        /* this is a probabilistic criterion. just because randomness doesn't
+        allow us to find new vectors, doesn't mean we're done :/ */
         var s="I failed to make a new vector. I tried a lot. Quitting."
         console.log(s); throw new Error(s);
       }
@@ -241,6 +254,7 @@ var ProducerModule = (function() {
       } else {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
+        // insert feature detection and go back to no-blob if FileReader not present (i.e. in MSIE)
         xhr.responseType = "blob";
         xhr.onload = function(e) {
           var blob = xhr.response;
@@ -268,7 +282,7 @@ var ProducerModule = (function() {
   init();
 
   producer.exerciseCapability = exerciseCapability;
-  producer.exerciseNewCapability = exerciseNewCapability;
+  producer.getNewVector = getNewVector;
   producer.typeToPath = typeToPath
   producer.makeURL = makeURL
   producer.makePayload = makePayload

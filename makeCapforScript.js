@@ -1,3 +1,6 @@
+// given a vector (below from html5sec cheat sheet), we deduce a syntax and express it as a JS object
+// i.e. {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
+
 var vectors = [
   {
     "data": "<input onfocus=write(1) autofocus>",
@@ -68,7 +71,7 @@ var vectors = [
 
 function makeCap(s) {
   var parser = new DOMParser();
-  var doc = parser.parseFromString(s, "text/html");
+  var doc = parser.parseFromString(s, "text/html");                                                                           /
   var payload;
   if (doc.head.innerHTML != "") {
     var payload = 'head'
