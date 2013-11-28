@@ -171,6 +171,7 @@ var ProducerModule = (function() {
 
   function templateToHTML(tmplObj) {
     //console.log("Generating " + tmplObj['tagName'] + " tag.");
+    var quoteChar = choice(["'", '"']);
 
 
     var tag = '<' + tmplObj['tagName'];
@@ -180,7 +181,7 @@ var ProducerModule = (function() {
         attVal = resolveResource(attVal);
 
       }
-      tag += ' '+ att + '="' + attVal + '"'; // concat with something like  src="srcVal"
+      tag += ' '+ att + '=' + quoteChar + attVal + quoteChar; // concat with something like  src="srcVal"
     }
     tag += '>';
     if ('content' in tmplObj) {
@@ -209,8 +210,8 @@ var ProducerModule = (function() {
   function getBreakOutString() {
     var breakouts = ['</'+'script>',
                      ' -->',
-                     '"',
-                     "'",
+                     '" ',
+                     "' ",
                      '">',
                      "'>",
     ];

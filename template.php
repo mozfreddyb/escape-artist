@@ -17,6 +17,9 @@ if ((isset($_GET['tid'])) && (isset($_GET['input']))) {
         case 2:
             echo "<!-- " .base64_decode($_GET['input']) . " -->";
             break;
+        case 3:
+            echo "<img src='".base64_decode($_GET['input'])."' />";
+            break;
     }
 }
 else {

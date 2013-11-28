@@ -5,7 +5,7 @@ var FuzzRunner = (function() {
 //startup:
   var filterNo = 0;
   var tmplNo = 0;
-  var tmplMax = 3;
+  var tmplMax = 4;
   var tested = {}; // used as hashtable to find vectors already used
   var vector;
   var bypassed = {}; // as a [filterNo][tmplNo] dict
@@ -16,11 +16,6 @@ var FuzzRunner = (function() {
     }
   }
   function executeTest() {
-  //XXX idea and implementation suck! split get-number + dowithnumber in two!
-  //XXX  if (bypassed['tmpl'+(tmplNo]['filter'+filterNo] !== false) {
-  //XXX    // already have a bypass, skip this test.
-  //XXX   filterNo++; tmplNo++;  // this might not skip all tests. slightly dumb approach :-)
-  //XXX    }
     if (tmplNo == tmplMax) { // next filter, if done with all templates
       tmplNo = tmplNo % tmplMax;
       filterNo++;
@@ -32,8 +27,22 @@ var FuzzRunner = (function() {
       }
 
       filterNo = 0; tmplNo = 0;
+      try {
       vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
+      }
+      catch(e) {
+        // Could not produce new erorrs.
+        runner.finished = + (+(new Date()));
+      }
       console.log("New: "+ vector)
+    }
+    if (bypassed['tmpl'+tmplNo]['filter'+filterNo] !== false) {
+      console.log("Skipping test for template " + (['in HTML', 'in an attribute (double-quote)', 'in a comment', 'in a attribute (single-quote)'])[tmplNo] +" and filter "+ (filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1]));
+      tmplNo++;
+      //XXX nasty hack to trigger next execution:
+      frames[0].name = "";
+      frames[0].document.location = "about:blank";
+      return;
     }
     var filterFunc = filters[filterNo][0];
     var filteredVector = filterFunc(vector);
@@ -78,8 +87,11 @@ var FuzzRunner = (function() {
   }
 
   function addToLog(filterNo, tmplNo, Vector, status) {
+    if (bypassed['tmpl'+tmplNo]['filter'+filterNo] !== false) {
+      return // do not log vector for this combination twice.
+    }
     bypassed['tmpl'+tmplNo]['filter'+filterNo] = Vector;
-    var tmplNames = ['in HTML', 'in an attribute', 'in a comment'];
+    var tmplNames = ['in HTML', 'in an attribute (double-quote)', 'in a comment', 'in a attribute (single-quote)'];
     if (tmplNo < tmplNames.length) {
       tmplDesc = tmplNames[tmplNo];
     }
