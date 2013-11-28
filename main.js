@@ -6,15 +6,15 @@ window.onmessage = function handle(evt) { // data, origin, source
   if (document.querySelector("iframe").src.indexOf("escape-artist/template.php") !== -1) {
     if (evt.source == frames[0]) {
       // we're good...kinda.
-      if (typeof data == "string") { // MSIE9
-        data = data.split(",");
-      }
-      if ((data instanceof Array) && (data.length == 2)) {
+      //if (typeof data == "string") { // MSIE9
+      //  data = data.split(",");
+      //}
+      if (typeof data === "string") {
         //console.log("adding result.. " + data );
-        var loc = evt.data[0];
+        //var loc = evt.data;
 
         // info = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
-        var info = data[1];
+        var info = data;
         var decoded = atob(info);
         decoded = decoded.split("|");
         var filterNo = decoded[1];

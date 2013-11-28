@@ -10,6 +10,10 @@ td.safe { background-color: palegreen; }
 td.pending { background-color: palegreen; }
 td.bypass { background-color: palevioletred; }
 
+td > pre {
+    width: 600px; overflow: auto;
+}
+
 div#overflow {
     overflow: scroll;
     height: 600px;

@@ -8,7 +8,19 @@ var FuzzRunner = (function() {
   var tmplMax = 3;
   var tested = {}; // used as hashtable to find vectors already used
   var vector;
+  var bypassed = {}; // as a [filterNo][tmplNo] dict
+  for (var i=0; i<tmplMax; i++) {
+    bypassed['tmpl'+ i] = {}
+    for (var j=0; j<filters.length; j++) {
+      bypassed['tmpl'+ i]['filter'+j] = false
+    }
+  }
   function executeTest() {
+  //XXX idea and implementation suck! split get-number + dowithnumber in two!
+  //XXX  if (bypassed['tmpl'+(tmplNo]['filter'+filterNo] !== false) {
+  //XXX    // already have a bypass, skip this test.
+  //XXX   filterNo++; tmplNo++;  // this might not skip all tests. slightly dumb approach :-)
+  //XXX    }
     if (tmplNo == tmplMax) { // next filter, if done with all templates
       tmplNo = tmplNo % tmplMax;
       filterNo++;
@@ -31,13 +43,7 @@ var FuzzRunner = (function() {
       console.log("Filtered: " + filteredVector);
     }
     //TODO test other thing than "just" script execution as a filter violation.
-
-    if (typeof String.toSource !== "undefined") {
-      // JSON.stringify is pretty cool, but toSource doesn't fuck up binary data in strings ;)
-      frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector.toSource()].join("|"));
-    } else {
-      frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", JSON.stringify(vector)].join("|"));
-    }
+    frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
     try {
       frames[0].document.location = 'template.php?tid=' + tmplNo + '&input=' + encodeURIComponent(btoa(filteredVector));
       //TODO decide if this is only debug ---v
@@ -72,6 +78,7 @@ var FuzzRunner = (function() {
   }
 
   function addToLog(filterNo, tmplNo, Vector, status) {
+    bypassed['tmpl'+tmplNo]['filter'+filterNo] = Vector;
     var tmplNames = ['in HTML', 'in an attribute', 'in a comment'];
     if (tmplNo < tmplNames.length) {
       tmplDesc = tmplNames[tmplNo];
@@ -103,6 +110,15 @@ var FuzzRunner = (function() {
     td_1.appendChild(pre);
     td_1.className = "vector";
 
+    // filtered Vector as string
+    var td_2a = document.createElement('TD');
+    tr.appendChild(td_2a);
+    var pre_0 = document.createElement('PRE')
+    var text_2a = document.createTextNode( filters[filterNo][0](Vector) );
+    pre_0.appendChild(text_2a)
+    td_2a.appendChild(pre_0);
+    td_2a.className = "filteredvector";
+
     // Result
     var td_2 = document.createElement('TD');
     tr.appendChild(td_2);
@@ -132,5 +148,6 @@ var FuzzRunner = (function() {
   runner.updateLog = updateLog;
   runner.start = start;
   runner.stop = stahp; // ...
+  runner.bypassed = bypassed;
   return runner;
 })();
