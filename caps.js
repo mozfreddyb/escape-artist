@@ -168,7 +168,8 @@ var ProducerModule = (function() {
   }
 
   function templateToHTML(tmplObj) {
-    var quoteChar = choice(["'", '"']);
+    var quoteChar = choice(["'", '"', ""]); // sometimes no-quotes are fine too :O
+
     // list of self-closing tags via http://stackoverflow.com/questions/97522/what-are-all-the-valid-self-closing-elements-in-xhtml-as-implemented-by-the-maj/8853550#8853550
     var selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
                        'meta', 'param', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame', 'isindex'
