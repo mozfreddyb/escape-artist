@@ -1,5 +1,5 @@
 * mutate using entities and escapes where applicable
-X add random prefix/suffix to escape context
+~ add random prefix/suffix to escape context (prefix is there...)
 * enable testing of other restriction scenarios (elements of "this" in Worker, CSP & Iframe Sandbox, ...)
 * grep for TODO/XXX comments..
 * restore MSIE compatibility (shim FileReader)

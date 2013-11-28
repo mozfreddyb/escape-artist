@@ -55,8 +55,9 @@ var FuzzRunner = (function() {
     frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
     try {
       frames[0].document.location = 'template.php?tid=' + tmplNo + '&input=' + encodeURIComponent(btoa(filteredVector));
-      //TODO decide if this is only debug ---v
-      document.querySelector("#debug").value = frames[0].document.body.innerHTML;
+      if (CONFIG.debug) { //TODO decide if this is only debug ---v
+        document.querySelector("#debug").value = frames[0].document.body.innerHTML;
+      }
     } catch (e) {}
     //addToLog(filterNo, tmplNo, vector, "pending/safe");
 

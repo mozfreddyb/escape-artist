@@ -49,8 +49,10 @@ function hideTests() {
 }
 
 
-window.onload = function() {
-  hideTests(); // hide by default
+window.onload = function()
+  if (!CONFIG.debug) {
+    hideTests(); // hide by default
+  }
   FuzzRunner.started = +(new Date()); // global
   document.querySelector("#nextButton").addEventListener("click", FuzzRunner.stahp);
   document.querySelector("#toggleVisibility").addEventListener("click", hideTests);
