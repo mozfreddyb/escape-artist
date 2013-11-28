@@ -5,7 +5,7 @@ var FuzzRunner = (function() {
 //startup:
   var filterNo = 0;
   var tmplNo = 0;
-  var tmplMax = 4;
+  var tmplMax = 5;
   var tested = {}; // used as hashtable to find vectors already used
   var vector;
   var bypassed = {}; // as a [filterNo][tmplNo] dict

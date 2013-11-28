@@ -49,7 +49,7 @@ function hideTests() {
 }
 
 
-window.onload = function()
+window.onload = function() {
   if (!CONFIG.debug) {
     hideTests(); // hide by default
   }
