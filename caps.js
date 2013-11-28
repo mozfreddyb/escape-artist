@@ -141,8 +141,6 @@ var ProducerModule = (function() {
 
     var path = typeToPath(contenttype)
 
-    //TODO revisit randomly chosen urls
-    //return URL_LAYERS['http'](path, contenttype);
     return URL_LAYERS[choice(Object.keys(URL_LAYERS))](path, contenttype);
   }
   function makePayload(path) {
@@ -170,9 +168,11 @@ var ProducerModule = (function() {
   }
 
   function templateToHTML(tmplObj) {
-    //console.log("Generating " + tmplObj['tagName'] + " tag.");
     var quoteChar = choice(["'", '"']);
-
+    // list of self-closing tags via http://stackoverflow.com/questions/97522/what-are-all-the-valid-self-closing-elements-in-xhtml-as-implemented-by-the-maj/8853550#8853550
+    var selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
+                       'meta', 'param', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame', 'isindex'
+                      ];
 
     var tag = '<' + tmplObj['tagName'];
     for (var att in tmplObj['attributes']) {
@@ -183,7 +183,12 @@ var ProducerModule = (function() {
       }
       tag += ' '+ att + '=' + quoteChar + attVal + quoteChar; // concat with something like  src="srcVal"
     }
-    tag += '>';
+    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
+      tag += '>';
+    } else {
+      tag += '/>';
+    }
+    // We still allow content for self-closing tags. Interesting, eh... ?:)
     if ('content' in tmplObj) {
       if (typeof tmplObj['content'] != "string") {
         tmplObj['content'] = resolveResource(tmplObj['content']);
@@ -191,8 +196,9 @@ var ProducerModule = (function() {
 
       tag += tmplObj['content'];
     }
-    //TODO do not add ending for img, br,
-    tag += '</' + tmplObj['tagName'] +'>'
+    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
+      tag += '</' + tmplObj['tagName'] +'>'
+    }
     return tag;
 
   }
