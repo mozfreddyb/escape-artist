@@ -20,7 +20,7 @@ if ((isset($_GET['tid'])) && (isset($_GET['input']))) {
         case 3: // img tag src attribute, single-quoted
             echo "<img src='".base64_decode($_GET['input'])."' />";
             break;
-        case 3: // a tag title attribute, unquoted
+        case 4: // a tag title attribute, unquoted
             echo "<a title=".base64_decode($_GET['input'])." />#</a>";
             break;
     }

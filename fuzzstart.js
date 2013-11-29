@@ -28,11 +28,13 @@ var FuzzRunner = (function() {
 
       filterNo = 0; tmplNo = 0;
       try {
-      vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
+        vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
       }
       catch(e) {
         // Could not produce new erorrs.
         runner.finished = + (+(new Date()));
+        console.log((runner.finished - runner.started) / 60000 +' minutes', Object.keys(Producer.tested).length + ' tests')
+        return
       }
       console.log("New: "+ vector)
     }
@@ -92,7 +94,7 @@ var FuzzRunner = (function() {
       return // do not log vector for this combination twice.
     }
     bypassed['tmpl'+tmplNo]['filter'+filterNo] = Vector;
-    var tmplNames = ['in HTML', 'in an attribute (double-quote)', 'in a comment', 'in a attribute (single-quote)'];
+    var tmplNames = ['in HTML', 'img tag src attribute, double quoted', 'in a comment', 'img tag src attribute, double quoted', 'a tag title attribute, unquoted'];
     if (tmplNo < tmplNames.length) {
       tmplDesc = tmplNames[tmplNo];
     }

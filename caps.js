@@ -28,7 +28,9 @@ var ProducerModule = (function() {
       {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
       {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
       {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
-      {"tagName": "embed", "attributes": {"src":['X-url', 'text/javascript']} },
+      {"tagName": "iframe", "attributes": {"srcdoc":['X-payload', 'text/html']} },
+      {"tagName": "iframe", "attributes": {"src":['X-url', 'text/html']} },
+      {"tagName": "svg", "attributes": {"onload":['X-payload', 'text/javascript']} },
       /*TODO
        replacing in attribute value :<
        {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
@@ -135,9 +137,10 @@ var ProducerModule = (function() {
       'http': function(path, type) { return 'http://' + CONFIG.host + '/' + CONFIG.path + '/' + path;  },
       // TODO add https
     }
-    URL_LAYERS['feed'] =  function(path, type) { return 'feed:' + URL_LAYERS['http'](path); };
-    URL_LAYERS['pcast'] = function(path, type) { return 'pcast:' + URL_LAYERS['http'](path); },
-      URL_LAYERS['view-source'] = function(path, type) { return 'view-source:' + URL_LAYERS['http'](path);  } ;
+
+    URL_LAYERS['feed'] =  function(path, type) { return 'feed:' + makeURL(type); };
+    URL_LAYERS['pcast'] = function(path, type) { return 'pcast:' + makeURL(type); },
+    URL_LAYERS['view-source'] = function(path, type) { return 'view-source:' + makeURL(type);  } ;
 
     var path = typeToPath(contenttype)
 
