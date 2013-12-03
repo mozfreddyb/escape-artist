@@ -77,6 +77,10 @@ var FuzzRunner = (function() {
       vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
       }
     }
+    if ((typeof window.blocked !== undefined) && (window.blocked == true)) {
+      setTimeout(runner.start, 1000); // let's check again later
+      return
+    }
     executeTest(vector);
   }
 

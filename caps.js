@@ -305,6 +305,7 @@ var ProducerModule = (function() {
   return producer;
 })
 //TODO
+//TODO \u0061lert(1)
 // cool vector I just thought of: -->"; alert("<script>alert(1)</script>");//
 // works in comment, script and pure html. not in any tag or style though.
 // see also "one vector to rule them all".

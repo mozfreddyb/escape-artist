@@ -1,3 +1,4 @@
+window.blocked = true;
 // this file oversees and does window.on* stuff.
 
 

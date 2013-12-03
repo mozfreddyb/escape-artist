@@ -1,4 +1,4 @@
-var filters = [
+filters = [
   /* [function nullFilter(s) {
     return s;
   }, "Does not filter"],
