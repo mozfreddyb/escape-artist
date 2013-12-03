@@ -39,7 +39,9 @@ var FuzzRunner = (function() {
       console.log("New: "+ vector)
     }
     if (bypassed['tmpl'+tmplNo]['filter'+filterNo] !== false) {
-      console.log("Skipping test for template " + (['in HTML', 'in an attribute (double-quote)', 'in a comment', 'in a attribute (single-quote)'])[tmplNo] +" and filter "+ (filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1]));
+      if (CONFIG.debug) {
+        console.log("Skipping test for template " + (['in HTML', 'in an attribute (double-quote)', 'in a comment', 'in a attribute (single-quote)'])[tmplNo] +" and filter "+ (filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1] || "unnamed function"));
+      }
       tmplNo++;
       //XXX nasty hack to trigger next execution:
       frames[0].name = "";
@@ -94,12 +96,12 @@ var FuzzRunner = (function() {
       return // do not log vector for this combination twice.
     }
     bypassed['tmpl'+tmplNo]['filter'+filterNo] = Vector;
-    var tmplNames = ['in HTML', 'img tag src attribute, double quoted', 'in a comment', 'img tag src attribute, double quoted', 'a tag title attribute, unquoted'];
+    var tmplNames = ['in HTML', 'img tag src attribute, double quoted', 'in a comment', 'img tag src attribute, single quoted', 'a tag title attribute, unquoted'];
     if (tmplNo < tmplNames.length) {
       tmplDesc = tmplNames[tmplNo];
     }
     // get function name. for IE we have to RegExp it out of the function source.
-    var filterName = filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1];
+    var filterName = filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1] || "unnamed function";
 
     var tr = document.createElement('TR');
 
