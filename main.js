@@ -23,7 +23,6 @@ window.onmessage = function handle(evt) { // data, origin, source
         if (FuzzRunner.updateLog(info, "bypass") !== true) {
           FuzzRunner.addToLog(filterNo, tmplNo, vector, "bypass");
         }
-
         //console.log(evt.data)
       }
 
