@@ -249,7 +249,7 @@ var ProducerModule = (function() {
   // Initialize
   function init() {
     function cachePath(path) {
-      if (typeof require !== "undefined") {
+      if (typeof window === "undefined") {
 
         var fs = require("fs");
 
