@@ -1,6 +1,1 @@
-<h1>An HTML page.</h1>
-<strong>It could restart our whole process (and loop so to say), by attempting to exercise all
-        capabilities again.</strong>
-
-<hr>
-But it won't :D
+<h1>XSS.HTML</h1><script>top.postMessage(window.name,/\*/.source.slice(1))</script>
