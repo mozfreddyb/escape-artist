@@ -266,24 +266,32 @@ var ProducerModule = (function() {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
         //TODO insert feature detection and go back to no-blob if FileReader not present (i.e. in MSIE)
-        xhr.responseType = "blob";
-        xhr.onload = function(e) {
-          var blob = xhr.response;
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            jsString = e.target.result; // blob content
-            mediaCache[path] = jsString;
-          };// end reader.onload
-          reader.readAsText(blob);
-          // again for base 64:
-          var reader64 = new FileReader();
-          reader64.onload = function(e) {
-            dataURICache[path] = e.target.result;
+        if (typeof FileReader !== "undefined") {
+          xhr.responseType = "blob";
+          xhr.onload = function(e) {
+            var blob = xhr.response;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              jsString = e.target.result; // blob content
+              mediaCache[path] = jsString;
+            };// end reader.onload
+            reader.readAsText(blob);
+            // again for base 64:
+            var reader64 = new FileReader();
+            reader64.onload = function(e) {
+              dataURICache[path] = e.target.result;
+            }
+            reader64.readAsDataURL(blob);
           }
-          reader64.readAsDataURL(blob);
-        };// end xhr.onload
-        xhr.send();
-      }
+        } else { // no FileReader e.g., MSIE9
+          xhr.onload = function(e) {
+            var resp = e.target.responseText;
+            mediaCache[path] = resp;
+            dataURICache[path] = 'data:,' + btoa(resp); // content-type?!
+          }
+        }
+      };// end xhr.onload
+      xhr.send();
     }
     // get all paths:
     for (var k in CONFIG.res) {
