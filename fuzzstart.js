@@ -59,7 +59,7 @@ var FuzzRunner = (function() {
     frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
     try {
       frames[0].document.location = 'template.php?tid=' + tmplNo + '&input=' + encodeURIComponent(btoa(filteredVector));
-      if (CONFIG.debug) { //TODO decide if this is only debug ---v
+      if (CONFIG.debug && document.getElementById("contentFrame").style.display != "none")  {
         document.querySelector("#debug").value = frames[0].document.body.innerHTML;
       }
     } catch (e) {}
