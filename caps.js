@@ -255,7 +255,7 @@ var ProducerModule = (function() {
 
         var content = fs.readFileSync(path);
         mediaCache[path] = content;
-        // fyou nodejs., this doesn't work. :<
+        //TODO fyou nodejs., this doesn't work. :<
         /*var content = fs.readFile(path, {encoding: 'ucs2'}, function (err, data) {
          if (err) throw err;
          mediaCache[path] = content;
@@ -265,7 +265,7 @@ var ProducerModule = (function() {
       } else {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
-        // insert feature detection and go back to no-blob if FileReader not present (i.e. in MSIE)
+        //TODO insert feature detection and go back to no-blob if FileReader not present (i.e. in MSIE)
         xhr.responseType = "blob";
         xhr.onload = function(e) {
           var blob = xhr.response;

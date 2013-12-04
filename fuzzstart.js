@@ -1,7 +1,6 @@
 var FuzzRunner = (function() {
   var runner = {};
 
-
 //startup:
   var filterNo = 0;
   var tmplNo = 0;
