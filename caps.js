@@ -30,7 +30,6 @@ var ProducerModule = (function() {
       {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
       {"tagName": "iframe", "attributes": {"srcdoc":['X-payload', 'text/html']} },
       {"tagName": "iframe", "attributes": {"src":['X-url', 'text/html']} },
-      {"tagName": "svg", "attributes": {"onload":['X-payload', 'text/javascript']} },
       /*TODO
        replacing in attribute value :<
        {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
