@@ -139,9 +139,15 @@ var ProducerModule = (function() {
     URL_LAYERS['feed'] =  function(path, type) { return 'feed:' + makeURL(type); };
     URL_LAYERS['pcast'] = function(path, type) { return 'pcast:' + makeURL(type); },
     URL_LAYERS['view-source'] = function(path, type) { return 'view-source:' + makeURL(type);  } ;
+    URL_LAYERS['chrobout'] = function(path, type) {
+      if (type.indexOf("image") === 0) {
+        return choice(['chrome://theme/IDR_PRODUCT_LOGO','about:logo']);
+      } else {
+        return makeURL(type);
+      }
+    }
 
     var path = typeToPath(contenttype)
-
     return URL_LAYERS[choice(Object.keys(URL_LAYERS))](path, contenttype);
   }
   function makePayload(path) {
