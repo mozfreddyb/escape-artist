@@ -181,14 +181,29 @@ var ProducerModule = (function() {
     var selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
                        'meta', 'param', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame', 'isindex'
                       ];
-
     var tag = '<' + tmplObj['tagName'];
     for (var att in tmplObj['attributes']) {
       var attVal = tmplObj['attributes'][att];
       if (typeof attVal != "string") {         // resolve X-url, X-payload directive
         attVal = resolveResource(attVal);
-
       }
+      var replFuncs = [function replAttWithEntities(x) {
+                         return x.replace(/./g, function(c) {
+                           return ('&#x' + c.charCodeAt(0).toString(16) + ';');
+                       }); },
+                       function DontReplAtAll(x) { return x }
+                       ];
+      if (att.indexOf("on") == 0) {
+        // event handler, i.e. param can also take JS-type encodings
+        replFuncs.push((function replAttWithUnicodeChars(x) {
+                          return x.replace(/./g, function(c) {
+                                                  var hx = c.charCodeAt(0).toString(16);
+                                                  var zeroPad = "000".substr(0, 4-hx.length);
+                                                  return "\\u" + zeroPad + hx + '';
+                                                 });
+                          }));
+      }
+      attVal = choice(replFuncs)(attVal);
       tag += ' '+ att + '=' + quoteChar + attVal + quoteChar; // concat with something like  src="srcVal"
     }
     if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
