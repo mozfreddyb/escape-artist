@@ -136,7 +136,6 @@ var ProducerModule = (function() {
       'http': function(path, type) { return 'http://' + CONFIG.host + '/' + CONFIG.path + '/' + path;  },
       // TODO add https
     }
-
     URL_LAYERS['feed'] =  function(path, type) { return 'feed:' + makeURL(type); };
     URL_LAYERS['pcast'] = function(path, type) { return 'pcast:' + makeURL(type); },
     URL_LAYERS['view-source'] = function(path, type) { return 'view-source:' + makeURL(type);  } ;
@@ -264,7 +263,6 @@ var ProducerModule = (function() {
       } else {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
-        //TODO insert feature detection and go back to no-blob if FileReader not present (i.e. in MSIE)
         if (typeof FileReader !== "undefined") {
           xhr.responseType = "blob";
           xhr.onload = function(e) {
