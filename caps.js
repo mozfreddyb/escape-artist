@@ -221,15 +221,24 @@ var ProducerModule = (function() {
     return templateToHTML(capCode);
   }
 
-  function getBreakOutString() {
-    var breakouts = ['</'+'script>',
-                     ' -->',
-                     '" ',
-                     "' ",
-                     '">',
-                     "'>",
+  function mutate(inp) {
+    var mutate_functions = [
+      function prependBreakout(s) {
+        var breakouts = ['</'+'script>',
+                         ' -->',
+                         '" ',
+                         "' ",
+                         '">',
+                         "'>",
+        ];
+        return choice(breakouts) + s;
+      },
+      function replaceSpacesWithTabs(s) {
+        return s.replace(/\s+/g, String.fromCharCode(9))
+      },
     ];
-    return choice(breakouts);
+    var mfunc = choice(mutate_functions);
+    return mfunc(inp)
   }
 
   var tested = {};
@@ -237,7 +246,7 @@ var ProducerModule = (function() {
     var newVector;
     var tries = 0;
     do {
-      newVector = getBreakOutString() + exerciseCapability(cap);
+      newVector = mutate(exerciseCapability(cap));
       tries++;
       if (tries > 100) {
         /* this is a probabilistic criterion. just because randomness doesn't
