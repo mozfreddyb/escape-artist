@@ -42,9 +42,7 @@
                     vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
                 } catch(e) { }
             }
-            prompt("XSS Vector", vector);
-
-            window.history.go(-1);
+            window.history.go( prompt("XSS Vector", vector) ? -1 : -1);
         }
     </script>
 </head>
