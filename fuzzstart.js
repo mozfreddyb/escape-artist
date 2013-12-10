@@ -55,6 +55,7 @@ var FuzzRunner = (function() {
       console.log("Filtered: " + filteredVector);
     }
     //TODO test other thing than "just" script execution as a filter violation.
+    //document.querySelector("iframe").setAttribute("name", btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|")));
     frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
     try {
       frames[0].document.location = 'template.php?tid=' + tmplNo + '&input=' + encodeURIComponent(btoa(filteredVector));
