@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XSS Bookmarklet</title>
+    <script src="base64.js"></script>
+    <script src="caps.js"></script>
+    <script>
+        var CONFIG = {
+            host:  document.location.hostname,
+            // Interlude: An Example why JavaScript sucks ;)
+            path : (a=location.href.split("/")).slice(0, a.length-1).join("/") + "/",
+            debug: false,
+            res: {
+                // Type: content-type, either type/subtype or just type, not "type/*".
+                'text/html': 'samples/sample.html',
+                'text/plain': 'samples/sample.txt',
+                'text/javascript': 'samples/sample.js',
+                'text/css': 'samples/sample.css',
+                'application/font-woff': 'samples/brankovic.ttf',
+                // images
+                'image/svg+xml': 'samples/sample.svg',
+                'image/gif':'samples/sample.gif',
+                'image/jpeg': 'samples/sample.jpg', // ??
+                'image/jpg': 'samples/sample.jpg',
+                'image/png': 'samples/sample.png',
+                'video/mp4': 'samples/video.mp4',
+                'video/ogg': 'samples/video.ogv',
+                'audio/mpeg': 'samples/audio.mp3',
+                'audio/ogg': 'samples/audio.ogg',
+                // more to follow... :)
+                /* suggestions:
+                 application/xml, jar (application/x-compressed,application/java-archivemime-type)
+                 */
+            },
+        }
+        Producer = ProducerModule();
+        console.log("TODO: Change this config when the config in main.js changes") //TODO FIXME XXX
+        window.onload = function() {
+            var vector;
+            while (vector == undefined) {
+                try {
+                    vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
+                } catch(e) { }
+            }
+            prompt("XSS Vector", vector);
+
+            window.history.go(-1);
+        }
+    </script>
+</head>
+<body></body>
+</html>
