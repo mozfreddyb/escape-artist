@@ -302,7 +302,7 @@ var ProducerModule = (function() {
             var blob = xhr.response;
             var reader = new FileReader();
             reader.onload = function(e) {
-              jsString = e.target.result; // blob content
+              var jsString = e.target.result; // blob content
               mediaCache[path] = jsString;
             };// end reader.onload
             reader.readAsText(blob);
