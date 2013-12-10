@@ -25,3 +25,6 @@ html generation:
 ** form&action=xss
 ** isindex
 ** meta refresh
+
+* we easily run into 414 (request uri too long) now. let's think about possible solutions, i.e. doc.write()
+** this causes the frame to be other-origin which makes access hard or impossible :y
