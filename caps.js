@@ -128,6 +128,7 @@ var ProducerModule = (function() {
       },
       'data:': function(path, type) {
         if (type.indexOf('text') !== 0) { return makeURL(type); } // fallback for non-text content
+        //XXX ^--- could also use encodeURIComponent!
        return 'data:' +type+ ',' + makePayload(path);
        },
       'data-base64': function(path, type) {
