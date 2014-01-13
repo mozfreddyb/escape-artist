@@ -34,14 +34,18 @@
             },
         }
         Producer = ProducerModule();
+        // overwrite template-js code to include, this one avoids quotes and spaces
+        Producer.mediaCache['samples/sample.js'] = "name?eval(name):alert(/XSS/.source)"
         console.log("TODO: Change this config when the config in main.js changes") //TODO FIXME XXX
         window.onload = function() {
             var vector;
+            // this avoids racing with the Producer's internal init() function, that fills the mediaCache
             while (vector == undefined) {
                 try {
                     vector = Producer.getNewVector("CAP_EXECUTE_SCRIPT");
                 } catch(e) { }
             }
+            // Go back to the previous page, but wait for the prompt..
             window.history.go( prompt("XSS Vector", vector) ? -1 : -1);
         }
     </script>
