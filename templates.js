@@ -1,6 +1,6 @@
-var templateFuncs = [
+var templates = [
   [function(s) {
-    return "<img src=\"" + s + "\" />";
+    return s;
   }, "straight in HTML"],
   [function(s) {
     return "<!-- " + s + " -->";

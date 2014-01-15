@@ -39,7 +39,7 @@ var FuzzRunner = (function() {
     }
     if (bypassed['tmpl'+tmplNo]['filter'+filterNo] !== false) {
       if (CONFIG.debug) {
-        console.log("Skipping test for template " + (['in HTML', 'in an attribute (double-quote)', 'in a comment', 'in a attribute (single-quote)'])[tmplNo] +" and filter "+ (filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1] || "unnamed function"));
+        console.log("Skipping test for template " + templates[tmplNo][1] +" and filter "+ filters[filterNo][1]);
       }
       tmplNo++;
       //XXX nasty hack to trigger next execution:
@@ -48,6 +48,7 @@ var FuzzRunner = (function() {
       return;
     }
     var filterFunc = filters[filterNo][0];
+    var tmplFunc = templates[tmplNo][0];
     var filteredVector = filterFunc(vector);
 
     if (CONFIG.debug) {
@@ -96,13 +97,10 @@ var FuzzRunner = (function() {
       return // do not log vector for this combination twice.
     }
     bypassed['tmpl'+tmplNo]['filter'+filterNo] = Vector;
-    var tmplNames = ['in HTML', 'img tag src attribute, double quoted', 'in a comment', 'img tag src attribute, single quoted', 'a tag title attribute, unquoted'];
-    if (tmplNo < tmplNames.length) {
-      tmplDesc = tmplNames[tmplNo];
+    if (tmplNo < templates.length) {
+      tmplDesc = templates[tmplNo][1];
     }
-    // get function name. for IE we have to RegExp it out of the function source.
-    var filterName = filters[filterNo][0].name || /function ([\S]+)\(.*/.exec(filters[filterNo][0])[1] || "unnamed function";
-
+    var filterName = filters[filterNo][1];
     var tr = document.createElement('TR');
 
     // Filter Name
