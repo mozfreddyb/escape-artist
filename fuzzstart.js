@@ -69,7 +69,7 @@ var FuzzRunner = (function() {
     tmplNo++;
   }
 
-  function start() {
+  function nextTest() {
     if (vector === undefined) {
       if (CONFIG.debug) {
         // "one vector to rule them all"
@@ -161,7 +161,7 @@ var FuzzRunner = (function() {
 
   runner.addToLog = addToLog;
   runner.updateLog = updateLog;
-  runner.start = start;
+  runner.nextTest = nextTest;
   runner.stop = stahp; // ...
   runner.bypassed = bypassed;
   return runner;
