@@ -58,12 +58,14 @@ var FuzzRunner = (function() {
     //TODO test other thing than "just" script execution as a filter violation.
     //document.querySelector("iframe").setAttribute("name", btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|")));
     frames[0].name = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
-    try {
-      frames[0].document.location = 'template.php?tid=' + tmplNo + '&input=' + encodeURIComponent(btoa(filteredVector));
-      if (CONFIG.debug && document.getElementById("contentFrame").style.display != "none")  {
-        document.querySelector("#debug").value = frames[0].document.body.innerHTML;
-      }
-    } catch (e) {}
+    frames[0].document.location = 'about:blank'; //template.php?tid=' + tmplNo + '&input=' + encodeURIComponent(btoa(filteredVector));
+    frames[0].document.open();
+    frames[0].document.write( tmplFunc(filteredVector) );
+    frames[0].document.close();
+    if (CONFIG.debug && document.getElementById("contentFrame").style.display != "none")  {
+      document.querySelector("#debug").value = frames[0].document.body.innerHTML;
+    }
+
     //addToLog(filterNo, tmplNo, vector, "pending/safe");
 
     tmplNo++;
