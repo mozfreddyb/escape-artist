@@ -51,7 +51,8 @@ window.onload = function() {
     hideTests(); // hide by default
   }
   FuzzRunner.started = +(new Date()); // global
-  document.querySelector("#nextButton").addEventListener("click", FuzzRunner.stahp);
+  document.querySelector("#stopButton").addEventListener("click", FuzzRunner.stahp);
+  document.querySelector("#nextButton").addEventListener("click", FuzzRunner.nextTest);
   document.querySelector("#toggleVisibility").addEventListener("click", hideTests);
   document.querySelector("#contentFrame").addEventListener("load", function() { setTimeout(FuzzRunner.nextTest, 0); } ); // wait a bit for debugging..
   // the first iframe is already loaded. kick off first test manually.
