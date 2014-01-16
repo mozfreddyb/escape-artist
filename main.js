@@ -1,7 +1,7 @@
 // this file oversees and does window.on* stuff.
 window.onmessage = function handle(evt) { // data, origin, source
   var data = evt.data;
-  if (document.querySelector("iframe").src.indexOf("escape-artist/template.php") !== -1) {
+  //if (document.querySelector("iframe").src.indexOf("escape-artist/template.php") !== -1) {
     if (evt.source == frames[0]) {
       // we're good...kinda.
       //if (typeof data == "string") { // MSIE9
@@ -25,7 +25,7 @@ window.onmessage = function handle(evt) { // data, origin, source
       }
 
     }
-  }
+  //}
 }
 
 
