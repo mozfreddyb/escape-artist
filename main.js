@@ -63,7 +63,7 @@ window.onload = function() {
 var CONFIG = {
   host:  document.location.hostname || "localhost",
   path : document.location.pathname || "~freddy/escape-artist/",
-  debug: false,
+  debug: (location.hash.indexOf('debug') != -1) || (location.search.indexOf('debug') !== -1) ? true : false,
   res: {
     // Type: content-type, either type/subtype or just type, not "type/*".
       'text/html': 'samples/sample.html',
