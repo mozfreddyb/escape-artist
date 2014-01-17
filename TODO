@@ -1,3 +1,7 @@
+* Change mutation to happen last, before emitting the vector.
+** Apply mutation as object attributes/annotation on the {"tagName": ...} object to allow easier de-/serialization and mutation of once emitted vectors.
+
+
 * mutate using entities and escapes where applicable
 ~ add random prefix/suffix to escape context (prefix is there...)
 * enable testing of other restriction scenarios (elements of "this" in Worker, CSP & Iframe Sandbox, ...)
@@ -19,7 +23,7 @@ html generation:
 ** backticks for attributes
 ** high-value unicode pendants to the low-value chars (not only whitespaces, but also alphanumeric and basic stuff)
 ** mix-in known goods
-*** <!--> as prefix, CDATA shenanigans
+*** "<!-->" as prefix, CDATA shenanigans
 ** do \x encoding in JS if char < FF. otherwise retain \u
 ** capitalization
 ** random crap before tag closing
@@ -33,6 +37,3 @@ html generation:
 ** meta refresh
 ** expression in style(?)
 ** scheme-relative urls
-
-* we easily run into 414 (request uri too long) now. let's think about possible solutions, i.e. doc.write()
-** this causes the frame to be other-origin which makes access hard or impossible :y
