@@ -1,17 +1,8 @@
 // this file oversees and does window.on* stuff.
 window.onmessage = function handle(evt) { // data, origin, source
   var data = evt.data;
-  //if (document.querySelector("iframe").src.indexOf("escape-artist/template.php") !== -1) {
     if (evt.source == frames[0]) {
-      // we're good...kinda.
-      //if (typeof data == "string") { // MSIE9
-      //  data = data.split(",");
-      //}
       if (typeof data === "string") {
-        //console.log("adding result.. " + data );
-        //var loc = evt.data;
-
-        // info = btoa(["Filter", filterNo, "Template Part", tmplNo, "Vector", vector].join("|"));
         var info = data;
         var decoded = atob(info);
         decoded = decoded.split("|");
@@ -21,19 +12,13 @@ window.onmessage = function handle(evt) { // data, origin, source
         if (FuzzRunner.updateLog(info, "bypass") !== true) {
           FuzzRunner.addToLog(filterNo, tmplNo, vector, "bypass");
         }
-        //console.log(evt.data)
       }
 
     }
-  //}
 }
 
 
-function hideTests() {
-  /* toggle hiding
-   <iframe id="contentFrame" onload="executeTest();" src="template.html"></iframe><br>
-   <textarea id="debug" style="width: 480px; height: 240px;"></textarea><br>
-   */
+function hideToggle() {
   try {
     if ((document.getElementById("contentFrame").style.display == "") || (document.getElementById("contentFrame").style.display == "block")) {
       document.getElementById("contentFrame").style.display = "none";
@@ -47,13 +32,10 @@ function hideTests() {
 
 
 window.onload = function() {
-  if (!CONFIG.debug) {
-    hideTests(); // hide by default
-  }
   FuzzRunner.started = +(new Date()); // global
   document.querySelector("#stopButton").addEventListener("click", FuzzRunner.stahp);
   document.querySelector("#nextButton").addEventListener("click", FuzzRunner.nextTest);
-  document.querySelector("#toggleVisibility").addEventListener("click", hideTests);
+  document.querySelector("#toggleVisibility").addEventListener("click", hideToggle);
   document.querySelector("#contentFrame").addEventListener("load", function() { setTimeout(FuzzRunner.nextTest, 0); } ); // wait a bit for debugging..
   // the first iframe is already loaded. kick off first test manually.
   // wait a sec, then load :) (required because producer caches things..)

@@ -21,4 +21,8 @@ div#overflow {
 #debug {
     width: 480px;
     height: 240px;
+    display: none;
+}
+#contentFrame {
+    display: none;
 }
