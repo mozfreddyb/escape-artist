@@ -6,7 +6,7 @@ var templates = [
     return "<!-- " + s + " -->";
   }, "img src attribute, double quoted"],
   [function(s) {
-    return "<img src='" + s + "' />";
+    return "<!-- " + s + "'-->";
   }, "html comment"],
   [function(s) {
     return "<img src='" + s + "' />";
