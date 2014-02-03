@@ -167,7 +167,7 @@ var ProducerModule = (function() {
    * */
 
   function makeURL(contenttype) {
-    URL_LAYERS = {
+    var URL_LAYERS = {
       /**
        * functions(url,type,resolve):
        * url = string of the url,
