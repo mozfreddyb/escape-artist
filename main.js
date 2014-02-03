@@ -33,7 +33,7 @@ function hideToggle() {
 
 window.onload = function() {
   FuzzRunner.started = +(new Date()); // global
-  document.querySelector("#stopButton").addEventListener("click", FuzzRunner.stahp);
+  document.querySelector("#stopButton").addEventListener("click", function() { FuzzRunner.nextTest = function() { }; });
   document.querySelector("#nextButton").addEventListener("click", FuzzRunner.nextTest);
   document.querySelector("#toggleVisibility").addEventListener("click", hideToggle);
   document.querySelector("#contentFrame").addEventListener("load", function() { setTimeout(FuzzRunner.nextTest, 0); } ); // wait a bit for debugging..

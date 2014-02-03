@@ -157,14 +157,9 @@ var FuzzRunner = (function() {
     catch(e) { return false; }
   }
 
-  function stahp() {
-    nextTest = function() { };
-  }
-
   runner.addToLog = addToLog;
   runner.updateLog = updateLog;
   runner.nextTest = nextTest;
-  runner.stop = stahp; // ...
   runner.bypassed = bypassed;
   return runner;
 })();
