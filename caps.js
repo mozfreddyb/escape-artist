@@ -100,16 +100,16 @@ var ProducerModule = (function() {
     else if (resType in CONFIG.res) { return CONFIG.res[resType]; }
     else { throw new Error("There was no resource found to satisfy this content type:" + resType); }
   }
-  Vector.prototype.toHTML = function templateToHTML(tmplObj) {
+  Vector.prototype.toHTML = function() {
     var quoteChar = choice(["'", '"', ""]); // sometimes no-quotes are fine too :O
 
     // list of self-closing tags via http://stackoverflow.com/questions/97522/what-are-all-the-valid-self-closing-elements-in-xhtml-as-implemented-by-the-maj/8853550#8853550
     var selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
       'meta', 'param', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame', 'isindex'
     ];
-    var tag = '<' + tmplObj['tagName'];
-    for (var att in tmplObj['attributes']) {
-      var attVal = tmplObj['attributes'][att];
+    var tag = '<' + this.capCode['tagName'];
+    for (var att in this.capCode['attributes']) {
+      var attVal = this.capCode['attributes'][att];
       if (typeof attVal != "string") {         // resolve X-url, X-payload directive
         attVal = resolveResource(attVal);
       }
@@ -132,21 +132,21 @@ var ProducerModule = (function() {
       attVal = choice(replFuncs)(attVal);
       tag += ' '+ att + '=' + quoteChar + attVal + quoteChar; // concat with something like  src="srcVal"
     }
-    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
+    if (selfClosing.indexOf(this.capCode['tagName']) == -1) { // i.e. not a self-closing tag
       tag += '>';
     } else {
       tag += '/>';
     }
     // We still allow content for self-closing tags. Interesting, eh... ?:)
-    if ('content' in tmplObj) {
-      if (typeof tmplObj['content'] != "string") {
-        tmplObj['content'] = resolveResource(tmplObj['content']);
+    if ('content' in this.capCode) {
+      if (typeof this.capCode['content'] != "string") {
+        this.capCode['content'] = resolveResource(this.capCode['content']);
       }
 
-      tag += tmplObj['content'];
+      tag += this.capCode['content'];
     }
-    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
-      tag += '</' + tmplObj['tagName'] +'>'
+    if (selfClosing.indexOf(this.capCode['tagName']) == -1) { // i.e. not a self-closing tag
+      tag += '</' + this.capCode['tagName'] +'>'
     }
     return tag;
 
