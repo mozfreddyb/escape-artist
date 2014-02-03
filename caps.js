@@ -4,74 +4,81 @@ var ProducerModule = (function() {
   var mediaCache = {};
   var dataURICache = {};
 
-  var tagTemplates = {
-    /* a dictionary of "capability" names and examples to exercise them.
-     to exercise a cap we require a html construct of the following form:
-     tagName: of course, the name of the html tag
-     attributes: a dict of key/value pairs
-     content: content between the opening and the closing tag.
 
-     filling attribute values or content can be done by giving a pair of typeExample and an optional type (not required)
-     in the form as a array with the length of two.
-     content-types can be either type/subtype or just type (e.g. "image" or "image/gif", but not "image/*").
+  function Vector(cap) {
+    var tagTemplates = {
+      /* a dictionary of "capability" names and examples to exercise them.
+       to exercise a cap we require a html construct of the following form:
+       tagName: of course, the name of the html tag
+       attributes: a dict of key/value pairs
+       content: content between the opening and the closing tag.
 
-     */
-    'CAP_INCLUDE_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', '']} } ], // the most powerful you can get...descending from here
-    'CAP_EXECUTE_SCRIPT': [
-      {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
-      {"tagName": "embed", "attributes": {"src":['X-url', 'text/javascript']} },
-      {"tagName": "embed", "attributes": {"code":['X-url', 'text/javascript']} },
-      {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
-      {"tagName": "iframe", "attributes": {"srcdoc":['X-payload', 'text/html']} },
-      {"tagName": "iframe", "attributes": {"src":['X-url', 'text/html']} },
-      {"tagName": "iframe", "attributes": {"src":['X-url', 'text/javascript']} },
-      {"tagName": "iframe", "attributes": {"onload": ['X-payload', 'text/javascript']}},
-      {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
-      {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
-      {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO doesnt work in frames :/
-      {"tagName": "isindex", "attributes": {"type": "image", "src": ['X-payload', 'text/javascript']}},
-      {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
-      {'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
-      {'tagName': 'script', 'attributes': {'src': ['X-url', 'text/javascript']} },
-      {"tagName": "svg", "attributes": {"onload": ['X-payload', 'text/javascript']}},
-      {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
-      /*TODO
-       replacing in attribute value :<
-       {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
-       {"tagName":"STYLE","attributes":{},"content":"@import \"data:,*%7bx:expression(write(1))%7D\";"},
+       filling attribute values or content can be done by giving a pair of typeExample and an optional type (not required)
+       in the form as a array with the length of two.
+       content-types can be either type/subtype or just type (e.g. "image" or "image/gif", but not "image/*").
+
        */
-    ],
-    //TODO how to nest tags? e.g. <form id="test"></form><button form="test" formaction="javascript:alert(1)">X</button>
+      'CAP_INCLUDE_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', '']} } ], // the most powerful you can get...descending from here
+      'CAP_EXECUTE_SCRIPT': [
+        {"tagName": "A", "attributes": {"folder": ['X-url', 'text/javascript'],"style": "behavior:url(#default#AnchorClick);"}, "content": ['X-payload','text']},
+        {"tagName": "embed", "attributes": {"src":['X-url', 'text/javascript']} },
+        {"tagName": "embed", "attributes": {"code":['X-url', 'text/javascript']} },
+        {"tagName": "frameset", "attributes": {'onload': ['X-payload', 'text/javascript'] } },
+        {"tagName": "iframe", "attributes": {"srcdoc":['X-payload', 'text/html']} },
+        {"tagName": "iframe", "attributes": {"src":['X-url', 'text/html']} },
+        {"tagName": "iframe", "attributes": {"src":['X-url', 'text/javascript']} },
+        {"tagName": "iframe", "attributes": {"onload": ['X-payload', 'text/javascript']}},
+        {'tagName': 'img', 'attributes': {'src': ['X-url', 'image'], 'onload': ['X-payload', 'text/javascript']} },
+        {'tagName': 'img', 'attributes': {'src': 'x', 'onerror': ['X-payload', 'text/javascript']} },
+        {"tagName": "input", "attributes": {"autofocus": "", "onfocus": ['X-payload', 'text/javascript']}}, //TODO doesnt work in frames :/
+        {"tagName": "isindex", "attributes": {"type": "image", "src": ['X-payload', 'text/javascript']}},
+        {"tagName": "object", "attributes": {"data":['X-url', 'text/javascript']}},
+        {'tagName': 'script', 'attributes': {}, 'content': ['X-payload', 'text/javascript']},
+        {'tagName': 'script', 'attributes': {'src': ['X-url', 'text/javascript']} },
+        {"tagName": "svg", "attributes": {"onload": ['X-payload', 'text/javascript']}},
+        {"tagName": "table", "attributes": {"background": ['X-url', 'text/javascript']}},
+        /*TODO
+         replacing in attribute value :<
+         {"tagName":"A","attributes":{"style":"-o-link:'javascript:alert(1)';-o-link-source:current"},"content":"X"},
+         {"tagName":"STYLE","attributes":{},"content":"@import \"data:,*%7bx:expression(write(1))%7D\";"},
+         */
+      ],
+      //TODO how to nest tags? e.g. <form id="test"></form><button form="test" formaction="javascript:alert(1)">X</button>
 
-    'CAP_APPLY_STYLE': [{'tagName': 'span', 'attributes': {'style': ['X-payload', 'text/css'] } },
-      {'tagName': 'style', 'attributes': {'type': 'text/css'}, 'content': ['X-payload', 'text/css'] },
-      {'tagName': 'style', 'attributes': {'type': 'text/css', 'src': ['X-url', 'text/css']} }
-    ],
-    'CAP_MEDIA_IMAGE': [{'tagName': 'img', 'attributes': {'src': ['X-url', 'image']} } ],
-    'CAP_MEDIA_AUDIO': [{'tagName': 'audio', 'attributes': {'autoplay': 'true', 'src': ['X-url', 'audio']} } ],
-    'CAP_MEDIA_VIDEO': [{'tagName': 'video', 'attributes': {'autoplay': 'true', 'src': ['X-url', 'video']} } ],
-    'CAP_SHOW_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', ''], 'sandbox': ''} } ],
-    'CAP_TRIGGER_REQUEST': [
-      {'tagName': 'link', 'attributes': {'rel':'prefetch', 'href': ['X-url', '']}, 'content':''} // prefetching
-    ],
-    'CAP_TRIGGER_DNS': [
-      {'tagName': 'link', 'attributes': {'rel':'dns-prefetch', 'href': ['X-url', '']}, 'content':''} // dns-prefetching
-    ],
-    //TODO this cap requires our x-url/x-payload resolution function to replace the tag but not the whole attribute/content
-    //'CAP_CHANGE_PAGE': [
-    //  {'tagName': 'meta', 'attributes': {'http-requiv': 'refresh', 'content': '0; url=X-url'}}
-    //]
+      'CAP_APPLY_STYLE': [{'tagName': 'span', 'attributes': {'style': ['X-payload', 'text/css'] } },
+        {'tagName': 'style', 'attributes': {'type': 'text/css'}, 'content': ['X-payload', 'text/css'] },
+        {'tagName': 'style', 'attributes': {'type': 'text/css', 'src': ['X-url', 'text/css']} }
+      ],
+      'CAP_MEDIA_IMAGE': [{'tagName': 'img', 'attributes': {'src': ['X-url', 'image']} } ],
+      'CAP_MEDIA_AUDIO': [{'tagName': 'audio', 'attributes': {'autoplay': 'true', 'src': ['X-url', 'audio']} } ],
+      'CAP_MEDIA_VIDEO': [{'tagName': 'video', 'attributes': {'autoplay': 'true', 'src': ['X-url', 'video']} } ],
+      'CAP_SHOW_PAGE': [{'tagName': 'iframe', 'attributes': {'src': ['X-url', ''], 'sandbox': ''} } ],
+      'CAP_TRIGGER_REQUEST': [
+        {'tagName': 'link', 'attributes': {'rel':'prefetch', 'href': ['X-url', '']}, 'content':''} // prefetching
+      ],
+      'CAP_TRIGGER_DNS': [
+        {'tagName': 'link', 'attributes': {'rel':'dns-prefetch', 'href': ['X-url', '']}, 'content':''} // dns-prefetching
+      ],
+      //TODO this cap requires our x-url/x-payload resolution function to replace the tag but not the whole attribute/content
+      //'CAP_CHANGE_PAGE': [
+      //  {'tagName': 'meta', 'attributes': {'http-requiv': 'refresh', 'content': '0; url=X-url'}}
+      //]
 
-    //XXX how do I (logically) get fonts in here? they are a subset of styles... :/
-    // example: @font-face { font-family: Brankovic;     src: url('samples/brankovic.ttf');
-    // several formats (ttf, woff, eot !?) , see e.g. http://fonts.googleapis.com/css?family=Londrina+Shadow
+      //XXX how do I (logically) get fonts in here? they are a subset of styles... :/
+      // example: @font-face { font-family: Brankovic;     src: url('samples/brankovic.ttf');
+      // several formats (ttf, woff, eot !?) , see e.g. http://fonts.googleapis.com/css?family=Londrina+Shadow
+    }
+    /* most other capabilities are somewhere in-between, since this is really hard to state fine-grained, I might not
+     * be able to express this as a POSET :(
+     * (see https://en.wikipedia.org/wiki/Partially_ordered_set)
+     */
+    tagTemplates['MAX'] = tagTemplates['CAP_INCLUDE_PAGE'];
+
+    if (!(cap in tagTemplates)) {
+      throw new Error("Capability is not defined")
+    }
+    this.capCode = choice(tagTemplates[cap]);
   }
-  /* most other capabilities are somewhere in-between, since this is really hard to state fine-grained, I might not
-   * be able to express this as a POSET :(
-   * (see https://en.wikipedia.org/wiki/Partially_ordered_set)
-   */
-  tagTemplates['MAX'] = tagTemplates['CAP_INCLUDE_PAGE'];
-
 
   function typeToPath(resType) {
     // Category: payload (real content) or a url.
@@ -92,6 +99,57 @@ var ProducerModule = (function() {
     }
     else if (resType in CONFIG.res) { return CONFIG.res[resType]; }
     else { throw new Error("There was no resource found to satisfy this content type:" + resType); }
+  }
+  Vector.prototype.toHTML = function templateToHTML(tmplObj) {
+    var quoteChar = choice(["'", '"', ""]); // sometimes no-quotes are fine too :O
+
+    // list of self-closing tags via http://stackoverflow.com/questions/97522/what-are-all-the-valid-self-closing-elements-in-xhtml-as-implemented-by-the-maj/8853550#8853550
+    var selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
+      'meta', 'param', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame', 'isindex'
+    ];
+    var tag = '<' + tmplObj['tagName'];
+    for (var att in tmplObj['attributes']) {
+      var attVal = tmplObj['attributes'][att];
+      if (typeof attVal != "string") {         // resolve X-url, X-payload directive
+        attVal = resolveResource(attVal);
+      }
+      var replFuncs = [function replAttWithEntities(x) {
+        return x.replace(/./g, function(c) {
+          return ('&#x' + c.charCodeAt(0).toString(16) + ';');
+        }); },
+        function DontReplAtAll(x) { return x }
+      ];
+      if (att.indexOf("on") == 0) {
+        // event handler, i.e. param can also take JS-type encodings
+        replFuncs.push((function replAttWithUnicodeChars(x) {
+          return x.replace(/./g, function(c) {
+            var hx = c.charCodeAt(0).toString(16);
+            var zeroPad = "000".substr(0, 4-hx.length);
+            return "\\u" + zeroPad + hx + '';
+          });
+        }));
+      }
+      attVal = choice(replFuncs)(attVal);
+      tag += ' '+ att + '=' + quoteChar + attVal + quoteChar; // concat with something like  src="srcVal"
+    }
+    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
+      tag += '>';
+    } else {
+      tag += '/>';
+    }
+    // We still allow content for self-closing tags. Interesting, eh... ?:)
+    if ('content' in tmplObj) {
+      if (typeof tmplObj['content'] != "string") {
+        tmplObj['content'] = resolveResource(tmplObj['content']);
+      }
+
+      tag += tmplObj['content'];
+    }
+    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
+      tag += '</' + tmplObj['tagName'] +'>'
+    }
+    return tag;
+
   }
 
 
@@ -180,66 +238,9 @@ var ProducerModule = (function() {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function templateToHTML(tmplObj) {
-    var quoteChar = choice(["'", '"', ""]); // sometimes no-quotes are fine too :O
-
-    // list of self-closing tags via http://stackoverflow.com/questions/97522/what-are-all-the-valid-self-closing-elements-in-xhtml-as-implemented-by-the-maj/8853550#8853550
-    var selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem',
-                       'meta', 'param', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame', 'isindex'
-                      ];
-    var tag = '<' + tmplObj['tagName'];
-    for (var att in tmplObj['attributes']) {
-      var attVal = tmplObj['attributes'][att];
-      if (typeof attVal != "string") {         // resolve X-url, X-payload directive
-        attVal = resolveResource(attVal);
-      }
-      var replFuncs = [function replAttWithEntities(x) {
-                         return x.replace(/./g, function(c) {
-                           return ('&#x' + c.charCodeAt(0).toString(16) + ';');
-                       }); },
-                       function DontReplAtAll(x) { return x }
-                       ];
-      if (att.indexOf("on") == 0) {
-        // event handler, i.e. param can also take JS-type encodings
-        replFuncs.push((function replAttWithUnicodeChars(x) {
-                          return x.replace(/./g, function(c) {
-                                                  var hx = c.charCodeAt(0).toString(16);
-                                                  var zeroPad = "000".substr(0, 4-hx.length);
-                                                  return "\\u" + zeroPad + hx + '';
-                                                 });
-                          }));
-      }
-      attVal = choice(replFuncs)(attVal);
-      tag += ' '+ att + '=' + quoteChar + attVal + quoteChar; // concat with something like  src="srcVal"
-    }
-    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
-      tag += '>';
-    } else {
-      tag += '/>';
-    }
-    // We still allow content for self-closing tags. Interesting, eh... ?:)
-    if ('content' in tmplObj) {
-      if (typeof tmplObj['content'] != "string") {
-        tmplObj['content'] = resolveResource(tmplObj['content']);
-      }
-
-      tag += tmplObj['content'];
-    }
-    if (selfClosing.indexOf(tmplObj['tagName']) == -1) { // i.e. not a self-closing tag
-      tag += '</' + tmplObj['tagName'] +'>'
-    }
-    return tag;
-
-  }
-
-
-
   function exerciseCapability(cap) {
-    if (!(cap in tagTemplates)) {
-      throw new Error("Capability is not defined")
-    }
-    var capCode = choice(tagTemplates[cap]); // randomly pick one
-    return templateToHTML(capCode);
+    var vector = new Vector(cap); // randomly pick one
+    return vector.toHTML();
   }
 
   function mutate(inp) {
@@ -342,7 +343,6 @@ var ProducerModule = (function() {
   producer.makeURL = makeURL
   producer.makePayload = makePayload
   producer.resolveResource = resolveResource
-  producer.templateToHTML = templateToHTML
   producer.mediaCache = mediaCache;
   producer.dataURICache = dataURICache;
   producer.tested = tested;
