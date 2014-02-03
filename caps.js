@@ -339,10 +339,10 @@ var ProducerModule = (function() {
 
   producer.exerciseCapability = exerciseCapability;
   producer.getNewVector = getNewVector;
-  producer.typeToPath = typeToPath
-  producer.makeURL = makeURL
-  producer.makePayload = makePayload
-  producer.resolveResource = resolveResource
+  producer.typeToPath = typeToPath;
+  producer.makeURL = makeURL;
+  producer.makePayload = makePayload;
+  producer.resolveResource = resolveResource;
   producer.mediaCache = mediaCache;
   producer.dataURICache = dataURICache;
   producer.tested = tested;
