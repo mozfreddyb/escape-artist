@@ -8,7 +8,7 @@ window.onmessage = function handle(evt) { // data, origin, source
         decoded = decoded.split("|");
         var filterNo = decoded[1];
         var tmplNo = decoded[3];
-        var vector = decoded[5];
+        var vector = JSON.stringify(decoded[5]);
         if (FuzzRunner.updateLog(info, "bypass") !== true) {
           FuzzRunner.addToLog(filterNo, tmplNo, vector, "bypass");
         }
