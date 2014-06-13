@@ -289,18 +289,24 @@ var ProducerModule = (function() {
   function init() {
     function cachePath(path) {
       if (typeof window === "undefined") {
+        if (typeof require === "function") { // NodeJS
+          var fs = require("fs");
 
-        var fs = require("fs");
-
-        var content = fs.readFileSync(path);
-        mediaCache[path] = content;
-        //TODO fyou nodejs., this doesn't work. :<
-        /*var content = fs.readFile(path, {encoding: 'ucs2'}, function (err, data) {
-         if (err) throw err;
-         mediaCache[path] = content;
-         callback(content);
-         });*/
-      } else {
+          var content = fs.readFileSync(path);
+          mediaCache[path] = content;
+          //TODO fyou nodejs., this doesn't work. :<
+          /*var content = fs.readFile(path, {encoding: 'ucs2'}, function (err, data) {
+           if (err) throw err;
+           mediaCache[path] = content;
+           callback(content);
+           });*/
+        }
+        else { // Rhino
+          var content = readFile(path);
+          mediaCache[path] = content;
+        }
+      }
+      else {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
         if (typeof FileReader !== "undefined") {
@@ -317,18 +323,19 @@ var ProducerModule = (function() {
             var reader64 = new FileReader();
             reader64.onload = function(e) {
               dataURICache[path] = e.target.result;
-            }
+            };
             reader64.readAsDataURL(blob);
           }
-        } else { // no FileReader e.g., MSIE9
+        }
+        else { // no FileReader e.g., MSIE9
           xhr.onload = function(e) {
             var resp = e.target.responseText;
             mediaCache[path] = resp;
             dataURICache[path] = 'data:,' + btoa(resp); // content-type?!
           }
         }
+        xhr.send();
       };// end xhr.onload
-      xhr.send();
     }
     // get all paths:
     for (var k in CONFIG.res) {
