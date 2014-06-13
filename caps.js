@@ -302,6 +302,9 @@ var ProducerModule = (function() {
            });*/
         }
         else { // Rhino
+          console = {
+            log: function(text) { print("CONSOLE: " + text); }
+          };
           var content = readFile(path);
           mediaCache[path] = content;
         }
